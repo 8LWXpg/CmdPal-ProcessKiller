@@ -21,9 +21,7 @@
     <Content Remove="Assets\Square44x44Logo.png" />
     <Content Remove="Assets\StoreLogo.png" />
     <Content Remove="Assets\Wide310x150Logo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Assets\SmallTile.scale-100.png" />
+    <Content Remove="Assets\SmallTile.scale-100.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -91,5 +89,7 @@
     <Authors>8LWXpg</Authors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NeutralLanguage>en</NeutralLanguage>
+    <PackageProjectUrl>https://github.com/8LWXpg/CmdPal-ProcessKiller</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/8LWXpg/CmdPal-ProcessKiller</RepositoryUrl>
   </PropertyGroup>
 </Project>
