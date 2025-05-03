@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "ProcessKiller (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "ProcessKiller (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
