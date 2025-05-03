@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using static ProcessKiller.Helpers.NativeMethods;
 
 namespace ProcessKiller;
 internal sealed partial class ProcessItem : ListItem
@@ -60,18 +61,18 @@ internal sealed partial class ProcessItem : ListItem
 	{
 		try
 		{
-			var bufferSize = 2048;
 			unsafe
 			{
-				var buffer = stackalloc char[bufferSize];
-				var len = bufferSize;
-				var ptr = NativeMethods.OpenProcess(
-					NativeMethods.ProcessAccessFlags.QueryLimitedInformation,
-					false,
-					p.Id);
-				return QueryFullProcessImageName(ptr, 0, out buffer, ref len) ?
-					(false, new(buffer)) :
-					(true, p.ProcessName);
+				var bufferSize = 2048;
+				unsafe
+				{
+					var buffer = stackalloc char[bufferSize];
+					var len = bufferSize;
+					var ptr = NativeMethods.OpenProcess(ProcessAccessFlags.QueryLimitedInformation, false, p.Id);
+					return QueryFullProcessImageName(ptr, 0, buffer, ref len) ?
+						(false, new(buffer)) :
+						(true, p.ProcessName);
+				}
 			}
 		}
 		catch
@@ -80,12 +81,11 @@ internal sealed partial class ProcessItem : ListItem
 		}
 	}
 
-	[LibraryImport("kernel32.dll", SetLastError = true)]
-	[return: MarshalAs(UnmanagedType.Bool)]
-	private static unsafe partial bool QueryFullProcessImageName(
-		IntPtr hProcess,
-		int dwFlags,
-		out char* lpExeName,
+	[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+	private static extern unsafe bool QueryFullProcessImageName(
+		[In] IntPtr hProcess,
+		[In] int dwFlags,
+		[Out] char* lpExeName,
 		ref int lpdwSize);
 
 	private const double KB = 1024;
