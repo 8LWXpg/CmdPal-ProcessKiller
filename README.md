@@ -1,7 +1,7 @@
 # Process Kill for CmdPal
 
 > [!IMPORTANT]
-> This project still in early development
+> This project is still in early development
 
 ## Installation
 
