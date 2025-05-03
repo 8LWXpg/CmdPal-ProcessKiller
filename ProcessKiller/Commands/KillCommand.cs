@@ -13,6 +13,6 @@ internal sealed partial class KillCommand(Process process) : InvokableCommand
 	public override ICommandResult Invoke()
 	{
 		_ = ProcessHelper.TryKill(Process);
-		return CommandResult.Hide();
+		return CommandResult.GoHome();
 	}
 }
