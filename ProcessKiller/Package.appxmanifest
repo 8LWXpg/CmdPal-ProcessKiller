@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -11,7 +11,7 @@
   <Identity
     Name="ProcessKiller"
     Publisher="CN=8LWXpg"
-    Version="0.0.1.0" />
+    Version="0.0.2.0" />
   <!-- When you're ready to publish your extension, you'll need to change the
        Publisher= to match your own identity -->
 
