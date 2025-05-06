@@ -26,6 +26,7 @@ if (-not $skipBuild){
 		| Out-File ./Package.appxmanifest -NoNewline
 
 git add ..
+git commit -m 'bump'
 git tag "v$version"
 
 popd
