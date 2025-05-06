@@ -117,43 +117,38 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="plugin_description" xml:space="preserve">
-    <value>Kill a process.</value>
-  </data>
-  <data name="plugin_kill_all" xml:space="preserve">
-    <value>Kill all instances of "{0}"</value>
-  </data>
-  <data name="plugin_kill_all_count" xml:space="preserve">
-    <value>Kill {0} processes</value>
-  </data>
-  <data name="plugin_kill_instances" xml:space="preserve">
-    <value>Kill all instances</value>
+  <data name="kill" xml:space="preserve">
+    <value>Kill</value>
+    <comment>Kill process</comment>
   </data>
   <data name="plugin_name" xml:space="preserve">
     <value>Process Killer</value>
   </data>
-  <data name="plugin_setting_kill_all_count" xml:space="preserve">
-    <value>Minimum matches to show "Kill all instances"</value>
-  </data>
-  <data name="plugin_setting_show_command_line" xml:space="preserve">
+  <data name="setting_show_command_line" xml:space="preserve">
     <value>Show command line of the process in the tool tip</value>
   </data>
-  <data name="plugin_setting_show_command_line_description" xml:space="preserve">
+  <data name="setting_show_command_line_description" xml:space="preserve">
     <value>This may slow down the plugin.</value>
   </data>
-  <data name="plugin_setting_show_shell_explorer" xml:space="preserve">
+  <data name="setting_show_shell_explorer" xml:space="preserve">
     <value>Show explorer.exe that hosts Windows Shell</value>
   </data>
-  <data name="plugin_tool_tip_command_line" xml:space="preserve">
+  <data name="detail_command_line" xml:space="preserve">
     <value>Command Line</value>
   </data>
-  <data name="plugin_tool_tip_main_window" xml:space="preserve">
+  <data name="detail_main_window" xml:space="preserve">
     <value>Main Window</value>
   </data>
-  <data name="plugin_tool_tip_memory" xml:space="preserve">
+  <data name="detail_memory" xml:space="preserve">
     <value>Memory Usage</value>
   </data>
-  <data name="plugin_tool_tip_path" xml:space="preserve">
+  <data name="detail_path" xml:space="preserve">
     <value>Path</value>
+  </data>
+  <data name="kill_a_process" xml:space="preserve">
+    <value>Kill a process.</value>
+  </data>
+  <data name="kill_a_process_by_ip_and_port" xml:space="preserve">
+    <value>Kill a process by IP and port</value>
   </data>
 </root>

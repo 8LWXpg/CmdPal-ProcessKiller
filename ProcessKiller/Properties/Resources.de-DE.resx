@@ -117,40 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="plugin_description" xml:space="preserve">
-    <value>Einen Prozess beenden.</value>
-  </data>
-  <data name="plugin_kill_all" xml:space="preserve">
-    <value>Alle Instanzen von "{0}" beenden</value>
-  </data>
-  <data name="plugin_kill_all_count" xml:space="preserve">
-    <value>{0} Prozesse beenden</value>
-  </data>
-  <data name="plugin_kill_instances" xml:space="preserve">
-    <value>Alle Instanzen beenden</value>
-  </data>
   <data name="plugin_name" xml:space="preserve">
     <value>Process Killer</value>
   </data>
-  <data name="plugin_setting_kill_all_count" xml:space="preserve">
-    <value>Mindestanzahl an Treffer, damit "Alle Instanzen beenden" angezeigt wird</value>
-  </data>
-  <data name="plugin_setting_show_command_line" xml:space="preserve">
+  <data name="setting_show_command_line" xml:space="preserve">
     <value>Befehlszeile des Prozesses im Tooltip anzeigen.</value>
   </data>
-  <data name="plugin_setting_show_command_line_description" xml:space="preserve">
+  <data name="setting_show_command_line_description" xml:space="preserve">
     <value>Dies kann das Plugin verlangsamen.</value>
   </data>
-  <data name="plugin_tool_tip_command_line" xml:space="preserve">
+  <data name="detail_command_line" xml:space="preserve">
     <value>Befehlszeile</value>
   </data>
-  <data name="plugin_tool_tip_main_window" xml:space="preserve">
+  <data name="detail_main_window" xml:space="preserve">
     <value>Hauptfenster</value>
   </data>
-  <data name="plugin_tool_tip_memory" xml:space="preserve">
+  <data name="detail_memory" xml:space="preserve">
     <value>Speichernutzung</value>
   </data>
-  <data name="plugin_tool_tip_path" xml:space="preserve">
+  <data name="detail_path" xml:space="preserve">
     <value>Pfad</value>
+  </data>
+  <data name="kill_a_process" xml:space="preserve">
+    <value>Einen Prozess beenden.</value>
   </data>
 </root>

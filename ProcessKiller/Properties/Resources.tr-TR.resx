@@ -117,43 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="plugin_description" xml:space="preserve">
-    <value>Bir görevi sonlandır.</value>
-  </data>
-  <data name="plugin_kill_all" xml:space="preserve">
-    <value>Tüm "{0}" görevlerini sonlandır</value>
-  </data>
-  <data name="plugin_kill_all_count" xml:space="preserve">
-    <value>{0} görevlerini sonlandır</value>
-  </data>
-  <data name="plugin_kill_instances" xml:space="preserve">
-    <value>Tüm görevleri sonlandır.</value>
-  </data>
   <data name="plugin_name" xml:space="preserve">
     <value>Process Killer</value>
   </data>
-  <data name="plugin_setting_kill_all_count" xml:space="preserve">
-    <value>"Tüm görevleri sonlandır"'ı göstermek için olan minimum eşleşmeler.</value>
-  </data>
-  <data name="plugin_setting_show_command_line" xml:space="preserve">
+  <data name="setting_show_command_line" xml:space="preserve">
     <value>Gerçekleşen görevin komut satırını araç ipuçlarında göster.</value>
   </data>
-  <data name="plugin_setting_show_command_line_description" xml:space="preserve">
+  <data name="setting_show_command_line_description" xml:space="preserve">
     <value>Bu eklentiyi yavaşlatabilir.</value>
   </data>
-  <data name="plugin_setting_show_shell_explorer" xml:space="preserve">
+  <data name="setting_show_shell_explorer" xml:space="preserve">
     <value>Windows Shell'i hostlayan explorer.exe'yi göster.</value>
   </data>
-  <data name="plugin_tool_tip_command_line" xml:space="preserve">
+  <data name="detail_command_line" xml:space="preserve">
     <value>Komut Satırı</value>
   </data>
-  <data name="plugin_tool_tip_main_window" xml:space="preserve">
+  <data name="detail_main_window" xml:space="preserve">
     <value>Ana Pencere</value>
   </data>
-  <data name="plugin_tool_tip_memory" xml:space="preserve">
+  <data name="detail_memory" xml:space="preserve">
     <value>Bellek Kullanımı</value>
   </data>
-  <data name="plugin_tool_tip_path" xml:space="preserve">
+  <data name="detail_path" xml:space="preserve">
     <value>Dizin</value>
+  </data>
+  <data name="kill_a_process" xml:space="preserve">
+    <value>Bir görevi sonlandır.</value>
   </data>
 </root>

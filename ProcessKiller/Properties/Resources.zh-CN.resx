@@ -117,43 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="plugin_description" xml:space="preserve">
-    <value>终止指定进程</value>
-  </data>
-  <data name="plugin_kill_all" xml:space="preserve">
-    <value>终止所有 "{0}" 实例</value>
-  </data>
-  <data name="plugin_kill_all_count" xml:space="preserve">
-    <value>这将终止 {0} 个进程</value>
-  </data>
-  <data name="plugin_kill_instances" xml:space="preserve">
-    <value>终止所有实例</value>
-  </data>
   <data name="plugin_name" xml:space="preserve">
     <value>Process Killer</value>
   </data>
-  <data name="plugin_setting_kill_all_count" xml:space="preserve">
-    <value>最小匹配数以显示 “终止所有实例”</value>
-  </data>
-  <data name="plugin_setting_show_command_line" xml:space="preserve">
+  <data name="setting_show_command_line" xml:space="preserve">
     <value>在工具的提示中显示进程的命令行</value>
   </data>
-  <data name="plugin_setting_show_command_line_description" xml:space="preserve">
+  <data name="setting_show_command_line_description" xml:space="preserve">
     <value>这可能会减慢插件的速度</value>
   </data>
-  <data name="plugin_setting_show_shell_explorer" xml:space="preserve">
+  <data name="setting_show_shell_explorer" xml:space="preserve">
     <value>显示 explorer.exe 进程</value>
   </data>
-  <data name="plugin_tool_tip_command_line" xml:space="preserve">
+  <data name="detail_command_line" xml:space="preserve">
     <value>命令行</value>
   </data>
-  <data name="plugin_tool_tip_main_window" xml:space="preserve">
+  <data name="detail_main_window" xml:space="preserve">
     <value>主窗口标题</value>
   </data>
-  <data name="plugin_tool_tip_memory" xml:space="preserve">
+  <data name="detail_memory" xml:space="preserve">
     <value>内存使用量</value>
   </data>
-  <data name="plugin_tool_tip_path" xml:space="preserve">
+  <data name="detail_path" xml:space="preserve">
     <value>路径</value>
+  </data>
+  <data name="kill_a_process" xml:space="preserve">
+    <value>终止指定进程</value>
   </data>
 </root>

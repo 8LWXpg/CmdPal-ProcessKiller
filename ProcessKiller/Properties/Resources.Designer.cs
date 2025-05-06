@@ -61,38 +61,65 @@ namespace ProcessKiller.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Command Line.
+        /// </summary>
+        internal static string detail_command_line {
+            get {
+                return ResourceManager.GetString("detail_command_line", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Main Window.
+        /// </summary>
+        internal static string detail_main_window {
+            get {
+                return ResourceManager.GetString("detail_main_window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Memory Usage.
+        /// </summary>
+        internal static string detail_memory {
+            get {
+                return ResourceManager.GetString("detail_memory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path.
+        /// </summary>
+        internal static string detail_path {
+            get {
+                return ResourceManager.GetString("detail_path", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kill.
+        /// </summary>
+        internal static string kill {
+            get {
+                return ResourceManager.GetString("kill", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kill a process..
         /// </summary>
-        internal static string plugin_description {
+        internal static string kill_a_process {
             get {
-                return ResourceManager.GetString("plugin_description", resourceCulture);
+                return ResourceManager.GetString("kill_a_process", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Kill all instances of &quot;{0}&quot;.
+        ///   Looks up a localized string similar to Kill a process by IP and port.
         /// </summary>
-        internal static string plugin_kill_all {
+        internal static string kill_a_process_by_ip_and_port {
             get {
-                return ResourceManager.GetString("plugin_kill_all", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Kill {0} processes.
-        /// </summary>
-        internal static string plugin_kill_all_count {
-            get {
-                return ResourceManager.GetString("plugin_kill_all_count", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Kill all instances.
-        /// </summary>
-        internal static string plugin_kill_instances {
-            get {
-                return ResourceManager.GetString("plugin_kill_instances", resourceCulture);
+                return ResourceManager.GetString("kill_a_process_by_ip_and_port", resourceCulture);
             }
         }
         
@@ -106,74 +133,29 @@ namespace ProcessKiller.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Minimum matches to show &quot;Kill all instances&quot;.
-        /// </summary>
-        internal static string plugin_setting_kill_all_count {
-            get {
-                return ResourceManager.GetString("plugin_setting_kill_all_count", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show command line of the process in the tool tip.
         /// </summary>
-        internal static string plugin_setting_show_command_line {
+        internal static string setting_show_command_line {
             get {
-                return ResourceManager.GetString("plugin_setting_show_command_line", resourceCulture);
+                return ResourceManager.GetString("setting_show_command_line", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to This may slow down the plugin..
         /// </summary>
-        internal static string plugin_setting_show_command_line_description {
+        internal static string setting_show_command_line_description {
             get {
-                return ResourceManager.GetString("plugin_setting_show_command_line_description", resourceCulture);
+                return ResourceManager.GetString("setting_show_command_line_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Show explorer.exe that hosts Windows Shell.
         /// </summary>
-        internal static string plugin_setting_show_shell_explorer {
+        internal static string setting_show_shell_explorer {
             get {
-                return ResourceManager.GetString("plugin_setting_show_shell_explorer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Command Line.
-        /// </summary>
-        internal static string plugin_tool_tip_command_line {
-            get {
-                return ResourceManager.GetString("plugin_tool_tip_command_line", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Main Window.
-        /// </summary>
-        internal static string plugin_tool_tip_main_window {
-            get {
-                return ResourceManager.GetString("plugin_tool_tip_main_window", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Memory Usage.
-        /// </summary>
-        internal static string plugin_tool_tip_memory {
-            get {
-                return ResourceManager.GetString("plugin_tool_tip_memory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Path.
-        /// </summary>
-        internal static string plugin_tool_tip_path {
-            get {
-                return ResourceManager.GetString("plugin_tool_tip_path", resourceCulture);
+                return ResourceManager.GetString("setting_show_shell_explorer", resourceCulture);
             }
         }
     }

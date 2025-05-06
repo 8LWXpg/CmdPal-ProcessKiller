@@ -1,6 +1,7 @@
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using ProcessKiller.Helpers;
+using ProcessKiller.Properties;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,8 +13,7 @@ internal sealed partial class ProcessPage : ListPage
 
 	public ProcessPage(SettingsManager settingsManager)
 	{
-		Title = "Kill a process";
-		Name = "Enter";
+		Title = Resources.kill_a_process;
 		Icon = IconHelpers.FromRelativePaths("Assets/Process.light.svg", "Assets/Process.dark.svg");
 		ShowDetails = true;
 		_settingsManager = settingsManager;

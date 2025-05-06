@@ -117,43 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="plugin_description" xml:space="preserve">
-    <value>Завершити процес.</value>
-  </data>
-  <data name="plugin_kill_all" xml:space="preserve">
-    <value>Завершити всі екземпляри "{0}"</value>
-  </data>
-  <data name="plugin_kill_all_count" xml:space="preserve">
-    <value>Завершити {0} процесів</value>
-  </data>
-  <data name="plugin_kill_instances" xml:space="preserve">
-    <value>Завершити всі екземпляри</value>
-  </data>
   <data name="plugin_name" xml:space="preserve">
     <value>Завершувач процесів</value>
   </data>
-  <data name="plugin_setting_kill_all_count" xml:space="preserve">
-    <value>Мінімальна кількість збігів для відображення "Завершити всі екземпляри"</value>
-  </data>
-  <data name="plugin_setting_show_command_line" xml:space="preserve">
+  <data name="setting_show_command_line" xml:space="preserve">
     <value>Показувати командний рядок процесу у підказці</value>
   </data>
-  <data name="plugin_setting_show_command_line_description" xml:space="preserve">
+  <data name="setting_show_command_line_description" xml:space="preserve">
     <value>Це може уповільнити роботу плагіна.</value>
   </data>
-  <data name="plugin_setting_show_shell_explorer" xml:space="preserve">
+  <data name="setting_show_shell_explorer" xml:space="preserve">
     <value>Показувати explorer.exe, який підтримує оболонку Windows</value>
   </data>
-  <data name="plugin_tool_tip_command_line" xml:space="preserve">
+  <data name="detail_command_line" xml:space="preserve">
     <value>Командний рядок</value>
   </data>
-  <data name="plugin_tool_tip_main_window" xml:space="preserve">
+  <data name="detail_main_window" xml:space="preserve">
     <value>Головне вікно</value>
   </data>
-  <data name="plugin_tool_tip_memory" xml:space="preserve">
+  <data name="detail_memory" xml:space="preserve">
     <value>Використання пам'яті</value>
   </data>
-  <data name="plugin_tool_tip_path" xml:space="preserve">
+  <data name="detail_path" xml:space="preserve">
     <value>Шлях</value>
+  </data>
+  <data name="kill_a_process" xml:space="preserve">
+    <value>Завершити процес.</value>
   </data>
 </root>

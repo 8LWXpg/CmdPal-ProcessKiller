@@ -23,13 +23,12 @@ public partial class ProcessKillerCommandsProvider : CommandProvider
 		_commands = [
 			new CommandItem(new ProcessPage(_settingsManager))
 			{
-				Title = DisplayName,
-				Subtitle = Resources.plugin_description,
+				Title = Resources.kill_a_process,
 				Icon = Icon,
 			},
 			new CommandItem(new PortPage(_settingsManager))
 			{
-				Title = "Kill a Process by IP and port",
+				Title = Resources.kill_a_process_by_ip_and_port,
 				Icon = IconHelpers.FromRelativePaths("Assets/Port.light.svg", "Assets/Port.dark.svg"),
 			}
 		];

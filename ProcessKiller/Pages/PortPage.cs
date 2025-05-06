@@ -1,6 +1,7 @@
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using ProcessKiller.Helpers;
+using ProcessKiller.Properties;
 
 namespace ProcessKiller.Pages;
 internal sealed partial class PortPage : ListPage
@@ -9,8 +10,7 @@ internal sealed partial class PortPage : ListPage
 
 	public PortPage(SettingsManager settingsManager)
 	{
-		Title = "Kill a process by IP and port";
-		Name = "Kill";
+		Title = Resources.kill_a_process_by_ip_and_port;
 		Icon = IconHelpers.FromRelativePaths("Assets/Port.light.svg", "Assets/Port.dark.svg");
 		ShowDetails = true;
 		_settingsManager = settingsManager;

@@ -8,14 +8,14 @@ internal sealed class SettingsManager : JsonSettingsManager
 	public bool ShowCommandLine => _showCommandLine.Value;
 	private readonly ToggleSetting _showCommandLine = new(
 		nameof(ShowCommandLine),
-		Resources.plugin_setting_show_command_line,
-		Resources.plugin_setting_show_command_line_description,
+		Resources.setting_show_command_line,
+		Resources.setting_show_command_line_description,
 		false);
 
 	public bool ShowShellExplorer => _showShellExplorer.Value;
 	private readonly ToggleSetting _showShellExplorer = new(
 		nameof(ShowShellExplorer),
-		Resources.plugin_setting_show_shell_explorer,
+		Resources.setting_show_shell_explorer,
 		"",
 		false);
 
