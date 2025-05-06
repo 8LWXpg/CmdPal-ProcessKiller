@@ -12,6 +12,7 @@ internal sealed partial class PortPage : ListPage
 		Title = "Kill a process by IP and port";
 		Name = "Kill";
 		Icon = IconHelpers.FromRelativePaths("Assets/Port.light.svg", "Assets/Port.dark.svg");
+		ShowDetails = true;
 		_settingsManager = settingsManager;
 	}
 

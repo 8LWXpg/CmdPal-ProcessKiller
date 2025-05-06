@@ -15,6 +15,7 @@ internal sealed partial class ProcessPage : ListPage
 		Title = "Kill a process";
 		Name = "Enter";
 		Icon = IconHelpers.FromRelativePaths("Assets/Process.light.svg", "Assets/Process.dark.svg");
+		ShowDetails = true;
 		_settingsManager = settingsManager;
 	}
 

@@ -23,7 +23,7 @@ internal sealed partial class ProcessItem : ListItem
 		Details = new Details()
 		{
 			Title = process.ProcessName,
-			Body = $"{process.Id}",
+			HeroImage = Icon,
 			Metadata = BuildDetailsElement(process, path, showCommandLine, commandLine),
 		};
 	}
@@ -38,15 +38,15 @@ internal sealed partial class ProcessItem : ListItem
 
 		if (!string.IsNullOrWhiteSpace(process.MainWindowTitle))
 		{
-			details.Add(new() { Key = Resources.plugin_tool_tip_main_window, Data = new DetailsLink(process.MainWindowTitle) });
+			details.Add(new() { Key = Resources.plugin_tool_tip_main_window, Data = new DetailsLink(string.Empty, process.MainWindowTitle) });
 		}
 
-		details.Add(new() { Key = Resources.plugin_tool_tip_memory, Data = new DetailsLink(FormatMemorySize(process.WorkingSet64)) });
-		details.Add(new() { Key = Resources.plugin_tool_tip_path, Data = new DetailsLink(path) });
+		details.Add(new() { Key = Resources.plugin_tool_tip_memory, Data = new DetailsLink(string.Empty, FormatMemorySize(process.WorkingSet64)) });
+		details.Add(new() { Key = Resources.plugin_tool_tip_path, Data = new DetailsLink(string.Empty, path) });
 
 		if (showCommandLine && !string.IsNullOrWhiteSpace(commandLine))
 		{
-			details.Add(new() { Key = Resources.plugin_tool_tip_command_line, Data = new DetailsLink(commandLine) });
+			details.Add(new() { Key = Resources.plugin_tool_tip_command_line, Data = new DetailsLink(string.Empty, commandLine) });
 		}
 
 		return [.. details.Cast<IDetailsElement>()];
