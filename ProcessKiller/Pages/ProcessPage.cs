@@ -21,7 +21,7 @@ internal sealed partial class ProcessPage : ListPage
 
 	public override IListItem[] GetItems()
 	{
-		var shellWindowId = ProcessHelper.GetProcessIDFromWindowHandle(NativeMethods.GetShellWindow());
+		var shellWindowId = ProcessHelper.GetShellWindowId();
 		var processes = Process.GetProcesses().Where(p => !ProcessHelper.IsSystemProcess(p) && (p.Id != shellWindowId || _settingsManager.ShowShellExplorer)).ToList();
 		CommandLineQuery? commandLineQuery = _settingsManager.ShowCommandLine ? new() : null;
 

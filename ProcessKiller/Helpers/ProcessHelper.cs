@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 
 namespace ProcessKiller.Helpers;
 internal static class ProcessHelper
@@ -26,9 +28,15 @@ internal static class ProcessHelper
 
 	public static bool IsSystemProcess(Process p) => SystemProcessList.Contains(p.ProcessName.ToLower(System.Globalization.CultureInfo.CurrentCulture));
 
-	public static uint GetProcessIDFromWindowHandle(IntPtr hwnd)
+	public static uint GetShellWindowId()
 	{
-		_ = NativeMethods.GetWindowThreadProcessId(hwnd, out var processId);
+		HWND hWnd = PInvoke.GetShellWindow();
+		uint processId = 0;
+		unsafe
+		{
+			_ = PInvoke.GetWindowThreadProcessId(hWnd, &processId);
+		}
+
 		return processId;
 	}
 

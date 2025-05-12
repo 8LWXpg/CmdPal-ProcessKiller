@@ -55,8 +55,7 @@ internal sealed class PortQuery
 			.Select(e => (ListItem)new ProcessItem(e.Value, commandLineQuery, showCommandLine, fallbackIcon)
 			{
 				Title = e.Key,
-			})
-			.Reverse();
+			});
 
 		return [.. results];
 	}

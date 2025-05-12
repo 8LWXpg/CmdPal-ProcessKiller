@@ -14,15 +14,6 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-  <ItemGroup>
-    <Content Remove="Assets\LargeTile.png" />
-    <Content Remove="Assets\SplashScreen.scale-100.png" />
-    <Content Remove="Assets\Square44x44Logo.altform-unplated_targetsize-16.png" />
-    <Content Remove="Assets\Square44x44Logo.png" />
-    <Content Remove="Assets\StoreLogo.png" />
-    <Content Remove="Assets\Wide310x150Logo.png" />
-    <Content Remove="Assets\SmallTile.scale-100.png" />
-  </ItemGroup>
 
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
@@ -44,6 +35,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CommandPalette.Extensions" />
+    <PackageReference Include="Microsoft.Windows.CsWin32">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Windows.CsWinRT" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
     <PackageReference Include="Microsoft.Web.WebView2" />
