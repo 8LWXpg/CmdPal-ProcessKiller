@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Windows.Storage.Streams;
 using Windows.Win32;
 using Windows.Win32.System.Threading;
 
@@ -18,7 +19,25 @@ internal sealed partial class ProcessItem : ListItem
 
 		Title = $"{process.ProcessName} - {process.Id}";
 		Subtitle = path;
-		Icon = iconFallback ? fallbackIcon : new(path);
+		// https://github.com/microsoft/PowerToys/issues/39485
+		if (iconFallback)
+		{
+			Icon = fallbackIcon;
+		}
+		else
+		{
+			IRandomAccessStream? stream = ThumbnailHelper.GetThumbnail(path).GetAwaiter().GetResult();
+			if (stream != null)
+			{
+				var data = new IconData(RandomAccessStreamReference.CreateFromStream(stream));
+				Icon = new IconInfo(data, data);
+			}
+			else
+			{
+				Icon = fallbackIcon;
+			}
+		}
+
 		Details = new Details()
 		{
 			Title = process.ProcessName,
@@ -63,14 +82,14 @@ internal sealed partial class ProcessItem : ListItem
 			unsafe
 			{
 				var bufferSize = 512;
-				unsafe
-				{
-					Span<char> buffer = stackalloc char[bufferSize];
-					var len = (uint)bufferSize;
-					return PInvoke.QueryFullProcessImageName(p.SafeHandle, PROCESS_NAME_FORMAT.PROCESS_NAME_WIN32, buffer, ref len)
-						? (false, new(buffer[..buffer.IndexOf('\0')]))
-						: ((bool, string))(true, p.ProcessName);
-				}
+				Span<char> buffer = stackalloc char[bufferSize];
+				var len = (uint)bufferSize;
+				return PInvoke.QueryFullProcessImageName(
+					p.SafeHandle,
+					PROCESS_NAME_FORMAT.PROCESS_NAME_WIN32,
+					buffer, ref len)
+					? (false, new(buffer[..buffer.IndexOf('\0')]))
+					: (true, p.ProcessName);
 			}
 		}
 		catch
