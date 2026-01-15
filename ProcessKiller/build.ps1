@@ -1,26 +1,27 @@
 param(
-	[switch]$skipBuild
+	[switch]$skipBuild,
+	[switch]$skipBump
 )
 
-Push-Location
-Set-Location $PSScriptRoot
+$ErrorActionPreference = 'Stop'
 
-$version = Read-Host -Prompt 'New tag'
+Push-Location $PSScriptRoot
 
-(Get-Content ./app.manifest -Raw) -replace `
-	'<assemblyIdentity version="[\d\.]+"', `
-	"<assemblyIdentity version=`"$version.0`"" `
-| Out-File .\app.manifest -NoNewline
-(Get-Content ./Package.appxmanifest -Raw) -replace `
-	'(Identity[\s\S]+?)Version="[\d\.]+"', `
-	"`$1Version=`"$version.0`"" `
-| Out-File ./Package.appxmanifest -NoNewline
+if (-not $skipBump) {
+	$version = Read-Host -Prompt 'New tag'
 
-if (-not $skipBuild){
+	(Get-Content ./Package.appxmanifest -Raw) -replace `
+		'(Identity[\s\S]+?)Version="[\d\.]+"', `
+		"`$1Version=`"$version.0`"" `
+	| Out-File ./Package.appxmanifest -NoNewline
+}
+
+if (-not $skipBuild) {
+	Remove-Item ./AppPackages/* -r -fo -ea ig
 	dotnet build --configuration Release -p:Platform=x64 -p:AppxPackageDir="AppPackages\x64\"
 	dotnet build --configuration Release -p:Platform=arm64 -p:AppxPackageDir="AppPackages\ARM64\"
 	mkdir out -ea ig
-	Remove-Item ./out/* -ea ig
+	Remove-Item ./out/* -r -fo -ea ig
 	$msix = Get-ChildItem ./AppPackages/ -Recurse -Filter *.msix
 	Copy-Item $msix ./out/. -Force
 
@@ -30,14 +31,16 @@ if (-not $skipBuild){
 	Pop-Location
 	$filename = $msix[0].Name
 	$firstIndex = $filename.IndexOf('_')
-	$secondIndex = $filename.IndexOf('_', $firstIndex+1)
-	$bundle = "./out/$($filename.Substring(0, $secondIndex))_Bundle.msixbundle"
+	$secondIndex = $filename.IndexOf('_', $firstIndex + 1)
+	$bundle = "$($filename.Substring(0, $secondIndex)).msixbundle"
 	makeappx bundle /v /d ./out/ /p $bundle
+	Move-Item $bundle ./out
 }
 
-git add ..
-git commit -m 'bump'
-git tag "v$version"
+if (-not $skipBump) {
+	git add ..
+	git commit -m 'bump'
+	git tag "v$version"
+}
 
 Pop-Location
-
