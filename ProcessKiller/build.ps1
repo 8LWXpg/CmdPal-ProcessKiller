@@ -2,32 +2,42 @@ param(
 	[switch]$skipBuild
 )
 
-pushd
-cd $PSScriptRoot
+Push-Location
+Set-Location $PSScriptRoot
 
 $version = Read-Host -Prompt 'New tag'
 
-if (-not $skipBuild){
-	dotnet build --configuration Release -p:GenerateAppxPackageOnBuild=true '-p:Platform=x64'
-	dotnet build --configuration Release -p:GenerateAppxPackageOnBuild=true '-p:Platform=arm64'
-	rm ./out/*
-	(Get-ChildItem -r *.msix -Exclude Microsoft.WindowsAppRuntime.1.6.msix).FullName | ForEach-Object { Copy-Item $_ ./out/. -Force }
-}
+(Get-Content ./app.manifest -Raw) -replace `
+	'<assemblyIdentity version="[\d\.]+"', `
+	"<assemblyIdentity version=`"$version.0`"" `
+| Out-File .\app.manifest -NoNewline
+(Get-Content ./Package.appxmanifest -Raw) -replace `
+	'(Identity[\s\S]+?)Version="[\d\.]+"', `
+	"`$1Version=`"$version.0`"" `
+| Out-File ./Package.appxmanifest -NoNewline
 
-(cat ./app.manifest -Raw) -replace `
-	'<assemblyIdentity version="[\d\.]+" name="ProcessKiller.app"/>', `
-	"<assemblyIdentity version=`"$version.0`" name=`"ProcessKiller.app`"/>" `
-		| Out-File .\app.manifest -NoNewline
-(cat ./Package.appxmanifest -Raw) -replace `
-	'Publisher="CN=8LWXpg"
-    Version="0.0.1.0" />', `
-	"Publisher=`"CN=8LWXpg`"
-    Version=`"$version.0`" />" `
-		| Out-File ./Package.appxmanifest -NoNewline
+if (-not $skipBuild){
+	dotnet build --configuration Release -p:Platform=x64 -p:AppxPackageDir="AppPackages\x64\"
+	dotnet build --configuration Release -p:Platform=arm64 -p:AppxPackageDir="AppPackages\ARM64\"
+	mkdir out -ea ig
+	Remove-Item ./out/* -ea ig
+	$msix = Get-ChildItem ./AppPackages/ -Recurse -Filter *.msix
+	Copy-Item $msix ./out/. -Force
+
+	Push-Location
+	Import-Module 'C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Microsoft.VisualStudio.DevShell.dll'
+	Enter-VsDevShell 44033118
+	Pop-Location
+	$filename = $msix[0].Name
+	$firstIndex = $filename.IndexOf('_')
+	$secondIndex = $filename.IndexOf('_', $firstIndex+1)
+	$bundle = "./out/$($filename.Substring(0, $secondIndex))_Bundle.msixbundle"
+	makeappx bundle /v /d ./out/ /p $bundle
+}
 
 git add ..
 git commit -m 'bump'
 git tag "v$version"
 
-popd
+Pop-Location
 
