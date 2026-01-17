@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Content Include="Assets\**\*.png" />
+    <Content Include="Assets\**\*.svg" />
   </ItemGroup>
 
   <ItemGroup>
