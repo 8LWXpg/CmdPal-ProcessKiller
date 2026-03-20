@@ -26,8 +26,8 @@ if (-not $skipBuild) {
 	Copy-Item $msix ./out/. -Force
 
 	Push-Location
-	Import-Module 'C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Microsoft.VisualStudio.DevShell.dll'
-	Enter-VsDevShell 44033118
+	Import-Module 'C:\Program Files\Microsoft Visual Studio\18\Community\Common7\Tools\Microsoft.VisualStudio.DevShell.dll'
+	Enter-VsDevShell e87fa5ce
 	Pop-Location
 	$filename = $msix[0].Name
 	$firstIndex = $filename.IndexOf('_')
