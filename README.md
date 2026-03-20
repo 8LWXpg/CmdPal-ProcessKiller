@@ -15,8 +15,15 @@
 
 ## Installation
 
-Download `.msix` in release page, and run the following command in PowerShell:
+I cannot get it published on MSStore and it's such a hassle to do that, so here's the workaround
 
-```pwsh
-Add-AppxPackage <msix> -AllowUnsigned
-```
+**Prerequisite**
+
+- (`winapp` cli)[https://github.com/microsoft/winappCli] -- `winget install Microsoft.WinAppCli`
+
+**Steps**
+
+1. Download both `msixbundle` and `cert.pfx`
+2. `winapp cert install cert.pfx`
+3. Click to install or `Add-AppxPackage <msix>`
+
