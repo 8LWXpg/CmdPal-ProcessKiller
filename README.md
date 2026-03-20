@@ -15,11 +15,11 @@
 
 ## Installation
 
-I cannot get it published on MSStore and it's such a hassle to do that, so here's the workaround
+I cannot get it published on MSStore and it's such a hassle to do that, so here's the workaround:
 
 **Prerequisite**
 
-- (`winapp` cli)[https://github.com/microsoft/winappCli] -- `winget install Microsoft.WinAppCli`
+- [`winapp` cli](https://github.com/microsoft/winappCli) -- `winget install Microsoft.WinAppCli`
 
 **Steps**
 
