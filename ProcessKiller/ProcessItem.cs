@@ -1,5 +1,6 @@
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using Microsoft.Win32.SafeHandles;
 using ProcessKiller.Properties;
 using System;
 using System.Collections.Generic;
@@ -10,21 +11,18 @@ using Windows.Win32;
 using Windows.Win32.System.Threading;
 
 namespace ProcessKiller;
+
 internal sealed partial class ProcessItem : ListItem
 {
 	public ProcessItem(Process process, CommandLineQuery? commandLineQuery, bool showCommandLine, IconInfo fallbackIcon) : base(new KillCommand(process))
 	{
-		(var iconFallback, var path) = TryGetProcessFilename(process);
+		var gotPath = TryGetProcessFilename(process, out var path);
 		var commandLine = commandLineQuery?.GetCommandLine(process.Id);
 
 		Title = $"{process.ProcessName} - {process.Id}";
 		Subtitle = path;
 		// https://github.com/microsoft/PowerToys/issues/39485
-		if (iconFallback)
-		{
-			Icon = fallbackIcon;
-		}
-		else
+		if (gotPath)
 		{
 			IRandomAccessStream? stream = ThumbnailHelper.GetThumbnail(path).GetAwaiter().GetResult();
 			if (stream != null)
@@ -36,6 +34,10 @@ internal sealed partial class ProcessItem : ListItem
 			{
 				Icon = fallbackIcon;
 			}
+		}
+		else
+		{
+			Icon = fallbackIcon;
 		}
 
 		Details = new Details()
@@ -75,27 +77,15 @@ internal sealed partial class ProcessItem : ListItem
 	/// </summary>
 	/// <param name="p"></param>
 	/// <returns></returns>
-	private static (bool, string) TryGetProcessFilename(Process p)
+	public static bool TryGetProcessFilename(Process p, out string path)
 	{
-		try
-		{
-			unsafe
-			{
-				var bufferSize = 512;
-				Span<char> buffer = stackalloc char[bufferSize];
-				var len = (uint)bufferSize;
-				return PInvoke.QueryFullProcessImageName(
-					p.SafeHandle,
-					PROCESS_NAME_FORMAT.PROCESS_NAME_WIN32,
-					buffer, ref len)
-					? (false, new(buffer[..buffer.IndexOf('\0')]))
-					: (true, p.ProcessName);
-			}
-		}
-		catch
-		{
-			return (true, p.ProcessName);
-		}
+		uint bufferSize = 2048;
+		Span<char> buffer = stackalloc char[(int)bufferSize];
+		var len = bufferSize;
+		using SafeFileHandle handle = PInvoke.OpenProcess_SafeHandle(PROCESS_ACCESS_RIGHTS.PROCESS_QUERY_LIMITED_INFORMATION, false, (uint)p.Id);
+		var success = (bool)PInvoke.QueryFullProcessImageName(handle, 0, buffer, ref len);
+		path = success ? new string(buffer[..(int)len]) : p.ProcessName;
+		return success;
 	}
 
 	private const double KB = 1024;

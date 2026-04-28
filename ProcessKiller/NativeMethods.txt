@@ -1,3 +1,4 @@
 ﻿GetWindowThreadProcessId
 GetShellWindow
 QueryFullProcessImageName
+OpenProcess
