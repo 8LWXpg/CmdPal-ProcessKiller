@@ -11,7 +11,7 @@
   <Identity
     Name="8LWXpg.ProcessKillerforCommandPalette"
     Publisher="CN=C82F3BA1-ED28-4A30-8FC1-503B94576C1B"
-    Version="1.0.0.0" />
+    Version="1.0.1.0" />
   <!-- When you're ready to publish your extension, you'll need to change the
        Publisher= to match your own identity -->
 

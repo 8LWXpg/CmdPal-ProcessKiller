@@ -57,7 +57,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Drawing.Common" />
-    <PackageReference Include="System.Management" />
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
