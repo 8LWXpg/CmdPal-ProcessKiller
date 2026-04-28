@@ -1,6 +1,7 @@
 param(
 	[switch]$skipBuild,
-	[switch]$skipBump
+	[switch]$skipBump,
+	[switch]$sign
 )
 
 $ErrorActionPreference = 'Stop'
@@ -35,6 +36,10 @@ if (-not $skipBuild) {
 	$bundle = "$($filename.Substring(0, $secondIndex)).msixbundle"
 	makeappx bundle /v /d ./out/ /p $bundle
 	Move-Item $bundle ./out
+}
+
+if ($sign) {
+	winapp sign $bundle E:/cert/cert.pfx
 }
 
 if (-not $skipBump) {

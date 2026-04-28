@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- Fixed command line parsing
+
 ## [1.0.0]
 
 - Fixed localization
