@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+- Bumped dependencies
+
 ## 1.0.1
 
 - Fixed command line parsing
