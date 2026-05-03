@@ -1,7 +1,7 @@
 param(
 	[switch]$skipBuild,
 	[switch]$skipBump,
-	[switch]$sign
+	[switch]$skipSign
 )
 
 $ErrorActionPreference = 'Stop'
@@ -38,8 +38,8 @@ if (-not $skipBuild) {
 	Move-Item $bundle ./out
 }
 
-if ($sign) {
-	winapp sign $bundle E:/cert/cert.pfx
+if (-not $skipSign) {
+	winapp sign ./out/$bundle E:/cert/cert.pfx
 }
 
 if (-not $skipBump) {
