@@ -8,11 +8,11 @@ $ErrorActionPreference = 'Stop'
 
 Push-Location $PSScriptRoot
 
-if (-not $skipBump) {
+if (-not $skipBump){
 	$version = Read-Host -Prompt 'New tag'
 
 	(Get-Content ./Package.appxmanifest -Raw) -replace `
-		'(Identity[\s\S]+?)Version="[\d\.]+"', `
+		'(Identity[^>]+?)Version="[\d\.]+"', `
 		"`$1Version=`"$version.0`"" `
 	| Out-File ./Package.appxmanifest -NoNewline
 }
@@ -42,7 +42,7 @@ if (-not $skipSign) {
 	winapp sign ./out/$bundle E:/cert/cert.pfx
 }
 
-if (-not $skipBump) {
+if (-not $skipBump){
 	git add ..
 	git commit -m 'bump'
 	git tag "v$version"
