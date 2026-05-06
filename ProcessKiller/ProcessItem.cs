@@ -1,6 +1,7 @@
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using Microsoft.Win32.SafeHandles;
+using ProcessKiller.Commands;
 using ProcessKiller.Properties;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,10 @@ internal sealed partial class ProcessItem : ListItem
 			HeroImage = Icon,
 			Metadata = BuildDetailsElement(process, path, showCommandLine, commandLine),
 		};
+
+		MoreCommands = [
+			new CommandContextItem(new KillAllCommand(process))
+		];
 	}
 
 	private static IDetailsElement[] BuildDetailsElement(

@@ -5,6 +5,7 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 
 namespace ProcessKiller.Helpers;
+
 internal static class ProcessHelper
 {
 	private static readonly HashSet<string> SystemProcessList =

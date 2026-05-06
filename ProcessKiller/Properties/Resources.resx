@@ -151,4 +151,7 @@
   <data name="kill_a_process_by_ip_and_port" xml:space="preserve">
     <value>Kill a process by IP and port</value>
   </data>
+  <data name="kill_all_process" xml:space="preserve">
+    <value>Kill all process</value>
+  </data>
 </root>
