@@ -1,7 +1,8 @@
 # Process Killer for CmdPal
 
-> [!IMPORTANT]
-> This project is still in early development
+<a href="https://apps.microsoft.com/detail/9PNHK9LDHMHS?referrer=appbadge&mode=full" target="_blank"  rel="noopener noreferrer">
+	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
+</a>
 
 ## Usage
 
@@ -14,8 +15,6 @@
 ![kill a process by port](./assets/port.png)
 
 ## Installation
-
-I cannot get it published on MSStore and it's such a hassle to do that, so here's the workaround:
 
 **Prerequisite**
 
