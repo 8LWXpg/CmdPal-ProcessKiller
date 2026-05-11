@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+
+- Updated app icon
+
 ## 1.1.0
 
 - Added `Kill all process` context menu item

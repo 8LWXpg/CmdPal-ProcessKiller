@@ -11,7 +11,7 @@
   <Identity
     Name="8LWXpg.ProcessKillerforCommandPalette"
     Publisher="CN=C82F3BA1-ED28-4A30-8FC1-503B94576C1B"
-    Version="1.1.0.0" />
+    Version="1.1.1.0" />
   <!-- When you're ready to publish your extension, you'll need to change the
        Publisher= to match your own identity -->
 
@@ -46,7 +46,8 @@
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"  Square71x71Logo="Assets\SmallTile.png"/>
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"  Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png">
+        </uap:DefaultTile >
         <uap:SplashScreen Image="Assets\SplashScreen.png"/>
       </uap:VisualElements>
       <Extensions>

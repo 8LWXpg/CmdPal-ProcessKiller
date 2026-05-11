@@ -14,13 +14,13 @@ public partial class ProcessKillerCommandsProvider : CommandProvider
 	public ProcessKillerCommandsProvider()
 	{
 		DisplayName = Resources.plugin_name;
-		Icon = IconHelpers.FromRelativePaths("Assets/ProcessKiller.light.svg", "Assets/ProcessKiller.dark.svg");
+		Icon = IconHelpers.FromRelativePath("Assets/icon.svg");
 		Settings = _settingsManager.Settings;
 		_commands = [
 			new CommandItem(new ProcessPage(_settingsManager))
 			{
 				Title = Resources.kill_a_process,
-				Icon = Icon,
+				Icon = IconHelpers.FromRelativePaths("Assets/ProcessKiller.light.svg", "Assets/ProcessKiller.dark.svg"),
 			},
 			new CommandItem(new PortPage(_settingsManager))
 			{
