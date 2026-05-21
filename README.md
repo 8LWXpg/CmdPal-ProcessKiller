@@ -14,7 +14,7 @@
 
 ![kill a process by port](./assets/port.png)
 
-## Installation
+## Manual Installation
 
 **Prerequisite**
 
@@ -23,6 +23,6 @@
 **Steps**
 
 1. Download both `msixbundle` and `cert.pfx`
-2. `sudo winapp cert install cert.pfx` (or open terminal with admin privilege if you don't have sudo)
+2. `sudo winapp cert install cert.pfx` (or open terminal with admin privilege if you don't have sudo, only need to do this once)
 3. Click to install or `Add-AppxPackage <msix>`
 
