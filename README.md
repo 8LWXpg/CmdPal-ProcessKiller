@@ -1,8 +1,22 @@
 # Process Killer for CmdPal
 
+## Install
+
 <a href="https://apps.microsoft.com/detail/9PNHK9LDHMHS?referrer=appbadge&mode=full" target="_blank"  rel="noopener noreferrer">
 	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200"/>
 </a>
+
+### Install via winget
+
+```sh
+winget install 8LWXpg.ProcessKillerforCommandPalette
+```
+
+or msstore version
+
+```sh
+winget install 9PNHK9LDHMHS
+```
 
 ## Usage
 
@@ -14,7 +28,7 @@
 
 ![kill a process by port](./assets/port.png)
 
-## Manual Installation
+## Install Dev Version
 
 **Prerequisite**
 
