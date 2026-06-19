@@ -37,6 +37,6 @@ winget install 9PNHK9LDHMHS
 **Steps**
 
 1. Download both `ProcessKiller_<version>.msixbundle` and `cert.pfx`
-2. `sudo winapp cert install cert.pfx` (or open terminal with admin privilege if you don't have sudo, only need to do this once)
+2. `sudo winapp cert install cert.pfx` (only need to do this once)
 3. Click to install or `Add-AppxPackage <msix>`
 
