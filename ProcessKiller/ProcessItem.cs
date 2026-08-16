@@ -1,12 +1,9 @@
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using Microsoft.Win32.SafeHandles;
 using ProcessKiller.Commands;
 using ProcessKiller.Helpers;
 using ProcessKiller.Properties;
 using System.Diagnostics;
-using Windows.Win32;
-using Windows.Win32.System.Threading;
 
 namespace ProcessKiller;
 
@@ -16,14 +13,14 @@ namespace ProcessKiller;
 /// </summary>
 internal sealed partial class ProcessItem : ListItem
 {
-	public ProcessItem(Process process, CommandLineQuery? commandLineQuery, bool showCommandLine, IconCache iconCache, IconInfo fallbackIcon) : base(new KillCommand(process.Id))
+	public ProcessItem(Process process, string? executablePath, CommandLineQuery? commandLineQuery, bool showCommandLine, IconCache iconCache, IconInfo fallbackIcon) : base(new KillCommand(process.Id))
 	{
-		var gotPath = TryGetProcessFilename(process, out var path);
+		var path = executablePath ?? process.ProcessName;
 		var commandLine = commandLineQuery?.GetCommandLine(process.Id);
 
 		Title = $"{process.ProcessName} - {process.Id}";
 		Subtitle = path;
-		Icon = iconCache.GetIcon(gotPath ? path : null, fallbackIcon);
+		Icon = iconCache.GetIcon(executablePath, fallbackIcon);
 
 		Details = new Details()
 		{
@@ -59,22 +56,6 @@ internal sealed partial class ProcessItem : ListItem
 		}
 
 		return [.. details.Cast<IDetailsElement>()];
-	}
-
-	/// <summary>
-	/// Try to get path of the process. If not, returns process name.
-	/// </summary>
-	/// <param name="p"></param>
-	/// <returns></returns>
-	public static bool TryGetProcessFilename(Process p, out string path)
-	{
-		uint bufferSize = 2048;
-		Span<char> buffer = stackalloc char[(int)bufferSize];
-		var len = bufferSize;
-		using SafeFileHandle handle = PInvoke.OpenProcess_SafeHandle(PROCESS_ACCESS_RIGHTS.PROCESS_QUERY_LIMITED_INFORMATION, false, (uint)p.Id);
-		var success = (bool)PInvoke.QueryFullProcessImageName(handle, 0, buffer, ref len);
-		path = success ? new string(buffer[..(int)len]) : p.ProcessName;
-		return success;
 	}
 
 	private const double KB = 1024;

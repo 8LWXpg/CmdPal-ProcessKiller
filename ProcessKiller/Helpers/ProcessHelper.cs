@@ -1,6 +1,8 @@
+using Microsoft.Win32.SafeHandles;
 using System.Diagnostics;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.System.Threading;
 
 namespace ProcessKiller.Helpers;
 
@@ -43,6 +45,21 @@ internal static class ProcessHelper
 		}
 
 		return result;
+	}
+
+	/// <summary>
+	/// Full path of the process image, or null when it cannot be read, which is normal for
+	/// elevated processes.
+	/// </summary>
+	public static string? GetExecutablePath(Process p)
+	{
+		uint bufferSize = 2048;
+		Span<char> buffer = stackalloc char[(int)bufferSize];
+		var len = bufferSize;
+		using SafeFileHandle handle = PInvoke.OpenProcess_SafeHandle(PROCESS_ACCESS_RIGHTS.PROCESS_QUERY_LIMITED_INFORMATION, false, (uint)p.Id);
+		return (bool)PInvoke.QueryFullProcessImageName(handle, 0, buffer, ref len)
+			? new string(buffer[..(int)len])
+			: null;
 	}
 
 	public static uint GetShellWindowId()
