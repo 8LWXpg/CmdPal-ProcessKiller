@@ -1,5 +1,7 @@
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using Windows.Storage.Streams;
 
@@ -8,14 +10,19 @@ namespace ProcessKiller.Helpers;
 /// <summary>
 /// Caches icons by executable path, shared by every page and kept across invocations.
 /// <para>
-/// Building one costs a shell thumbnail call plus an in-memory stream, and the same executable
-/// shows up many times in a single listing - <see cref="Pages.PortPage"/> lists one item per
-/// socket, so a browser alone can repeat one icon hundreds of times.
+/// The shell call behind a thumbnail is the expensive part, and the same executable shows up many
+/// times in a single listing - <see cref="Pages.PortPage"/> lists one item per socket, so a mail
+/// client alone can repeat one icon hundreds of times.
 /// </para>
 /// <para>
-/// Nothing here is ever disposed. An <see cref="IconInfo"/> handed to the host has to stay
-/// readable for as long as the host holds it, and we get no notification of when that ends, so
-/// evicted entries are left to the GC instead.
+/// One <see cref="IconInfo"/> serves every item with the same path. That is only safe because it
+/// is backed by an <see cref="IconBytesReference"/>, which gives each read its own stream, so the
+/// bitmap is stored once no matter how many rows show it.
+/// </para>
+/// <para>
+/// Nothing here is ever disposed. Icons handed to the host have to stay readable for as long as
+/// the host holds them and we get no notification of when that ends, so evicted entries are left
+/// to the GC instead.
 /// </para>
 /// </summary>
 internal sealed class IconCache
@@ -46,7 +53,7 @@ internal sealed class IconCache
 
 		// The lock is held across the thumbnail call. Items within a refresh are built one at a
 		// time anyway, so the only thing this can serialize is two pages refreshing at once, and
-		// in exchange each path is looked up and built exactly once.
+		// in exchange each path costs one shell call for the lifetime of the server.
 		lock (_lock)
 		{
 			if (!_byPath.TryGetValue(path, out IconInfo? icon))
@@ -69,13 +76,29 @@ internal sealed class IconCache
 	private static IconInfo? BuildIcon(string path)
 	{
 		// https://github.com/microsoft/PowerToys/issues/39485
-		IRandomAccessStream? stream = ThumbnailHelper.GetThumbnail(path).GetAwaiter().GetResult();
-		if (stream == null)
+		IRandomAccessStream? thumbnail = ThumbnailHelper.GetThumbnail(path).GetAwaiter().GetResult();
+		if (thumbnail == null)
 		{
 			return null;
 		}
 
-		var data = new IconData(RandomAccessStreamReference.CreateFromStream(stream));
-		return new IconInfo(data, data);
+		// Copy the bytes out and let the shell's stream go. Only the buffer is kept.
+		using (thumbnail)
+		{
+			var size = (uint)thumbnail.Size;
+			if (size == 0)
+			{
+				return null;
+			}
+
+			IBuffer buffer = thumbnail
+				.GetInputStreamAt(0)
+				.ReadAsync(new Windows.Storage.Streams.Buffer(size), size, InputStreamOptions.None)
+				.GetAwaiter()
+				.GetResult();
+
+			var data = new IconData(new IconBytesReference(buffer.ToArray()));
+			return new IconInfo(data, data);
+		}
 	}
 }
