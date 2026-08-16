@@ -5,14 +5,9 @@ using Windows.Storage.Streams;
 namespace ProcessKiller.Helpers;
 
 /// <summary>
-/// A stream reference over a fixed buffer that mints a fresh stream on every open.
-/// <para>
-/// <see cref="RandomAccessStreamReference.CreateFromStream"/> wraps one live stream and every
-/// open reads that same one, so sharing a single icon across many list items had the host reading
-/// it concurrently and rows that lost the race rendered blank. Cloning does not help, clones
-/// still coordinate through the parent. Holding the bytes and building a new stream per open
-/// makes readers fully independent, which is what lets one icon back any number of items.
-/// </para>
+/// A stream reference over a fixed buffer, opening a new stream each time so any number of items
+/// can share one icon. <see cref="RandomAccessStreamReference.CreateFromStream"/> is not a
+/// substitute: it wraps one live stream, and concurrent opens of it read empty.
 /// </summary>
 internal sealed partial class IconBytesReference(byte[] bytes) : IRandomAccessStreamReference
 {
@@ -24,8 +19,7 @@ internal sealed partial class IconBytesReference(byte[] bytes) : IRandomAccessSt
 		_ = stream.WriteAsync(_bytes.AsBuffer()).AsTask().GetAwaiter().GetResult();
 		stream.Seek(0);
 
-		// CreateFromStream only has to supply the content type wrapper here, the stream it wraps
-		// is this call's own and is never handed to anyone else.
+		// Only for the content type wrapper, the stream it wraps belongs to this call alone.
 		return RandomAccessStreamReference.CreateFromStream(stream).OpenReadAsync();
 	}
 }

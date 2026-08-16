@@ -11,10 +11,8 @@ using Windows.Win32.System.Threading;
 namespace ProcessKiller;
 
 /// <summary>
-/// A snapshot of a process. Everything shown is read out of <paramref name="process"/> during
-/// construction, so the caller stays the owner and is free to dispose it as soon as the item is
-/// built. The commands carry the id and name rather than the <see cref="Process"/> itself, which
-/// matters because one process backs many items on <see cref="Pages.PortPage"/>.
+/// A snapshot of a process. Everything shown is read during construction, so the caller keeps
+/// ownership and can dispose the process as soon as the item is built.
 /// </summary>
 internal sealed partial class ProcessItem : ListItem
 {

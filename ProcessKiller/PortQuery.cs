@@ -10,8 +10,7 @@ internal sealed partial class PortQuery : IDisposable
 {
 	public readonly Dictionary<string, Process> Query;
 
-	// The processes behind Query, one entry per id. A process holds as many local addresses as it
-	// has sockets, so Query borrows and this owns.
+	// Owns what Query points at: one process holds as many local addresses as it has sockets.
 	private readonly List<Process> _processes = [];
 
 	/// <summary>

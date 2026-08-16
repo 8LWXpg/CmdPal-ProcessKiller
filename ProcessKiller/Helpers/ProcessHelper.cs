@@ -68,8 +68,8 @@ internal static class ProcessHelper
 	}
 
 	/// <summary>
-	/// Resolve a process by id and kill it. Items capture the id when the list is built, so by the
-	/// time the command runs the process may be gone.
+	/// Kill the process with this id. Items capture the id when the list is built, so it may
+	/// already be gone by the time the command runs.
 	/// </summary>
 	public static bool TryKillById(int processId)
 	{
@@ -80,7 +80,6 @@ internal static class ProcessHelper
 		}
 		catch (ArgumentException)
 		{
-			// Nothing is running under that id any more.
 			return false;
 		}
 

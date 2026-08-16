@@ -41,7 +41,6 @@ internal sealed partial class ProcessPage : ListPage
 		}
 		finally
 		{
-			// The items copied out everything they show, so the snapshots are done.
 			foreach (Process p in processes)
 			{
 				p.Dispose();
