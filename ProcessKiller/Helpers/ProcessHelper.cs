@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Windows.Win32;
 using Windows.Win32.Foundation;

@@ -4,10 +4,7 @@ using Microsoft.Win32.SafeHandles;
 using ProcessKiller.Commands;
 using ProcessKiller.Helpers;
 using ProcessKiller.Properties;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Windows.Win32;
 using Windows.Win32.System.Threading;
 

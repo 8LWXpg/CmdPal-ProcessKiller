@@ -1,6 +1,5 @@
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using ProcessKiller.Properties;
-using System.IO;
 
 namespace ProcessKiller.Helpers;
 internal sealed class SettingsManager : JsonSettingsManager

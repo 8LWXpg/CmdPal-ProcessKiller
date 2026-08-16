@@ -2,7 +2,6 @@ using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using ProcessKiller.Helpers;
 using ProcessKiller.Properties;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace ProcessKiller.Pages;

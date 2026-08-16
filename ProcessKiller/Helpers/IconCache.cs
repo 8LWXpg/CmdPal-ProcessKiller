@@ -1,8 +1,5 @@
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
 using Windows.Storage.Streams;
 
 namespace ProcessKiller.Helpers;

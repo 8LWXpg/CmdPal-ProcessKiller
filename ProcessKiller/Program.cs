@@ -1,9 +1,6 @@
 using Microsoft.CommandPalette.Extensions;
 using Shmuelie.WinRTServer;
 using Shmuelie.WinRTServer.CsWinRT;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ProcessKiller;
 
