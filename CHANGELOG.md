@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2
+
+- Fix memory usage with dispose pattern
+
 ## 1.1.1
 
 - Updated app icon
