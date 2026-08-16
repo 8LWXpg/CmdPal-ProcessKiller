@@ -1,4 +1,3 @@
-using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using ProcessKiller.Helpers;
 using System;
@@ -8,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 
 namespace ProcessKiller;
+
 internal sealed class PortQuery
 {
 	public readonly Dictionary<string, Process> Query;
@@ -17,7 +17,7 @@ internal sealed class PortQuery
 	/// </summary>
 	public PortQuery()
 	{
-		var process = new Process
+		using var process = new Process
 		{
 			StartInfo = new()
 			{
@@ -29,9 +29,13 @@ internal sealed class PortQuery
 		};
 		_ = process.Start();
 
-		var processes = Process.GetProcesses().Where(p => !ProcessHelper.IsSystemProcess(p)).ToList();
+		List<Process> processes = ProcessHelper.GetNonSystemProcesses();
+		var output = process.StandardOutput.ReadToEnd();
+		process.WaitForExit();
+
 		Query = [];
-		foreach (var row in process.StandardOutput.ReadToEnd().Split("\r\n", StringSplitOptions.RemoveEmptyEntries).Skip(2))
+		HashSet<int> keptIds = [];
+		foreach (var row in output.Split("\r\n", StringSplitOptions.RemoveEmptyEntries).Skip(2))
 		{
 			var elements = row.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 			var localAddress = elements[1];
@@ -44,19 +48,26 @@ internal sealed class PortQuery
 
 			// There should be only one process using that address and port
 			Query[localAddress] = pr;
+			_ = keptIds.Add(pr.Id);
+		}
+
+		// Dispose the processes we queried but didn't end up keeping in Query.
+		foreach (Process p in processes)
+		{
+			if (!keptIds.Contains(p.Id))
+			{
+				p.Dispose();
+			}
 		}
 	}
 
-	public IListItem[] GetItems(bool showCommandLine, IconInfo fallbackIcon)
+	public List<ProcessItem> GetItems(bool showCommandLine, IconInfo fallbackIcon)
 	{
 		CommandLineQuery? commandLineQuery = showCommandLine ? new() : null;
 
-		IEnumerable<ListItem> results = Query
-			.Select(e => (ListItem)new ProcessItem(e.Value, commandLineQuery, showCommandLine, fallbackIcon)
-			{
-				Title = e.Key,
-			});
-
-		return [.. results];
+		return [.. Query.Select(e => new ProcessItem(e.Value, commandLineQuery, showCommandLine, fallbackIcon)
+		{
+			Title = e.Key,
+		})];
 	}
 }

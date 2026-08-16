@@ -18,6 +18,7 @@ internal sealed partial class KillAllCommand(Process process) : InvokableCommand
 		foreach (Process p in processes)
 		{
 			_ = ProcessHelper.TryKill(p);
+			p.Dispose();
 		}
 
 		return CommandResult.GoHome();

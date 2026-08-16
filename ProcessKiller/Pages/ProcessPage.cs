@@ -3,13 +3,16 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 using ProcessKiller.Helpers;
 using ProcessKiller.Properties;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 namespace ProcessKiller.Pages;
+
 internal sealed partial class ProcessPage : ListPage
 {
 	private readonly SettingsManager _settingsManager;
+
+	// Items kept alive so their Process/icon-stream can be disposed at the start of the next
+	// refresh, once they're no longer the ones being shown.
+	private List<ProcessItem> _trackedItems = [];
 
 	public ProcessPage(SettingsManager settingsManager)
 	{
@@ -21,16 +24,20 @@ internal sealed partial class ProcessPage : ListPage
 
 	public override IListItem[] GetItems()
 	{
-		var shellWindowId = ProcessHelper.GetShellWindowId();
-		var processes = Process.GetProcesses().Where(p => !ProcessHelper.IsSystemProcess(p) && (p.Id != shellWindowId || _settingsManager.ShowShellExplorer)).ToList();
+		foreach (ProcessItem item in _trackedItems)
+		{
+			item.Dispose();
+		}
+
+		var excludeId = _settingsManager.ShowShellExplorer ? null : (int?)ProcessHelper.GetShellWindowId();
 		CommandLineQuery? commandLineQuery = _settingsManager.ShowCommandLine ? new() : null;
 
-		List<ListItem> results = processes.ConvertAll(p => (ListItem)new ProcessItem(
-			p,
-			commandLineQuery,
-			_settingsManager.ShowCommandLine,
-			Icon));
+		List<ProcessItem> results = ProcessHelper
+			.GetNonSystemProcesses(excludeId)
+			.ConvertAll(p => new ProcessItem(p, commandLineQuery, _settingsManager.ShowCommandLine, Icon));
+
 		results.Reverse();
+		_trackedItems = results;
 
 		return [.. results];
 	}

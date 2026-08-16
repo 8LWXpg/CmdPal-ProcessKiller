@@ -27,7 +27,24 @@ internal static class ProcessHelper
 		"wmiprvse",
 	];
 
-	public static bool IsSystemProcess(Process p) => SystemProcessList.Contains(p.ProcessName.ToLower(System.Globalization.CultureInfo.CurrentCulture));
+	private static bool IsSystemProcess(Process p) => SystemProcessList.Contains(p.ProcessName.ToLower(System.Globalization.CultureInfo.CurrentCulture));
+
+	public static List<Process> GetNonSystemProcesses(int? excludeProcessId = null)
+	{
+		List<Process> result = [];
+		foreach (Process p in Process.GetProcesses())
+		{
+			if (IsSystemProcess(p) || p.Id == excludeProcessId)
+			{
+				p.Dispose();
+				continue;
+			}
+
+			result.Add(p);
+		}
+
+		return result;
+	}
 
 	public static uint GetShellWindowId()
 	{

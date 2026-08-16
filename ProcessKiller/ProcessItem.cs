@@ -13,10 +13,15 @@ using Windows.Win32.System.Threading;
 
 namespace ProcessKiller;
 
-internal sealed partial class ProcessItem : ListItem
+internal sealed partial class ProcessItem : ListItem, IDisposable
 {
+	private readonly Process _process;
+	private readonly IRandomAccessStream? _iconStream;
+
 	public ProcessItem(Process process, CommandLineQuery? commandLineQuery, bool showCommandLine, IconInfo fallbackIcon) : base(new KillCommand(process))
 	{
+		_process = process;
+
 		var gotPath = TryGetProcessFilename(process, out var path);
 		var commandLine = commandLineQuery?.GetCommandLine(process.Id);
 
@@ -25,10 +30,10 @@ internal sealed partial class ProcessItem : ListItem
 		// https://github.com/microsoft/PowerToys/issues/39485
 		if (gotPath)
 		{
-			IRandomAccessStream? stream = ThumbnailHelper.GetThumbnail(path).GetAwaiter().GetResult();
-			if (stream != null)
+			_iconStream = ThumbnailHelper.GetThumbnail(path).GetAwaiter().GetResult();
+			if (_iconStream != null)
 			{
-				var data = new IconData(RandomAccessStreamReference.CreateFromStream(stream));
+				var data = new IconData(RandomAccessStreamReference.CreateFromStream(_iconStream));
 				Icon = new IconInfo(data, data);
 			}
 			else
@@ -51,6 +56,12 @@ internal sealed partial class ProcessItem : ListItem
 		MoreCommands = [
 			new CommandContextItem(new KillAllCommand(process))
 		];
+	}
+
+	public void Dispose()
+	{
+		_process.Dispose();
+		_iconStream?.Dispose();
 	}
 
 	private static IDetailsElement[] BuildDetailsElement(
