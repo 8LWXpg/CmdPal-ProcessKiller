@@ -9,11 +9,11 @@ internal sealed partial class KillCommand(int processId) : InvokableCommand
 {
 	public override string Name => Resources.kill;
 
-	private readonly int ProcessId = processId;
+	private readonly int _processId = processId;
 
 	public override ICommandResult Invoke()
 	{
-		_ = ProcessHelper.TryKillById(ProcessId);
+		_ = ProcessHelper.TryKillById(_processId);
 		return CommandResult.GoHome();
 	}
 }

@@ -10,11 +10,11 @@ internal sealed partial class KillAllCommand(string processName) : InvokableComm
 {
 	public override string Name => Resources.kill_all_process;
 
-	private readonly string ProcessName = processName;
+	private readonly string _processName = processName;
 
 	public override ICommandResult Invoke()
 	{
-		foreach (Process p in Process.GetProcessesByName(ProcessName))
+		foreach (Process p in Process.GetProcessesByName(_processName))
 		{
 			using (p)
 			{

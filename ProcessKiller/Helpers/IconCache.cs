@@ -11,7 +11,6 @@ namespace ProcessKiller.Helpers;
 /// </summary>
 internal sealed class IconCache
 {
-	// Distinct executables on a busy machine, capped so a long lived server cannot grow forever.
 	private const int Capacity = 512;
 
 	// null means the shell had no thumbnail, cached so the miss is not retried on every refresh.
@@ -27,13 +26,11 @@ internal sealed class IconCache
 	/// </summary>
 	public IconInfo GetIcon(string? path, IconInfo fallbackIcon)
 	{
-		if (path == null)
+		if (path is null)
 		{
 			return fallbackIcon;
 		}
 
-		// Held across the thumbnail call. Items are built one at a time, so the most this can
-		// serialize is two pages refreshing at once.
 		lock (_lock)
 		{
 			if (!_byPath.TryGetValue(path, out IconInfo? icon))
@@ -65,11 +62,6 @@ internal sealed class IconCache
 		using (thumbnail)
 		{
 			var size = (uint)thumbnail.Size;
-			if (size == 0)
-			{
-				return null;
-			}
-
 			IBuffer buffer = thumbnail
 				.GetInputStreamAt(0)
 				.ReadAsync(new Windows.Storage.Streams.Buffer(size), size, InputStreamOptions.None)

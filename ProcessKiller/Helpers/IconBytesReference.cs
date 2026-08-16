@@ -5,9 +5,9 @@ using Windows.Storage.Streams;
 namespace ProcessKiller.Helpers;
 
 /// <summary>
-/// A stream reference over a fixed buffer, opening a new stream each time so any number of items
-/// can share one icon. <see cref="RandomAccessStreamReference.CreateFromStream"/> is not a
-/// substitute: it wraps one live stream, and concurrent opens of it read empty.
+/// A stream reference backed by a fixed buffer. A new stream is opened for each request, allowing multiple
+/// items to share the same icon. <see cref="RandomAccessStreamReference.CreateFromStream"/> is not suitable
+/// because it wraps a single live stream, and concurrent opens on that reference returns an empty stream.
 /// </summary>
 internal sealed partial class IconBytesReference(byte[] bytes) : IRandomAccessStreamReference
 {
