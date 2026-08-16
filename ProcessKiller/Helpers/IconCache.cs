@@ -27,47 +27,43 @@ internal sealed class IconCache
 	private const int Capacity = 512;
 
 	// null value means "the shell has no thumbnail for this path", cached so a miss is not retried
-	// on every refresh. Callers substitute their own fallback icon.
+	// on every refresh. The fallback is substituted on the way out and never stored, so one cache
+	// can serve pages that fall back to different icons.
 	private readonly Dictionary<string, IconInfo?> _byPath = [];
 	private readonly Queue<string> _insertionOrder = new();
 	private readonly Lock _lock = new();
 
 	/// <summary>
-	/// Get the icon for <paramref name="path"/>, or <see langword="null"/> if the shell has no
-	/// thumbnail for it.
+	/// Get the icon for <paramref name="path"/>, falling back to <paramref name="fallbackIcon"/>
+	/// when there is no path or the shell has no thumbnail for it.
 	/// </summary>
-	public IconInfo? GetIcon(string path)
+	public IconInfo GetIcon(string? path, IconInfo fallbackIcon)
 	{
-		lock (_lock)
+		if (path == null)
 		{
-			if (_byPath.TryGetValue(path, out IconInfo? cached))
-			{
-				return cached;
-			}
+			return fallbackIcon;
 		}
 
-		// Fetched outside the lock, a thumbnail call goes out to the shell and can block.
-		IconInfo? icon = BuildIcon(path);
-
+		// The lock is held across the thumbnail call. Items within a refresh are built one at a
+		// time anyway, so the only thing this can serialize is two pages refreshing at once, and
+		// in exchange each path is looked up and built exactly once.
 		lock (_lock)
 		{
-			// A concurrent refresh may have gotten there first. Prefer its entry so a path keeps
-			// mapping to a single icon and ours is dropped.
-			if (_byPath.TryGetValue(path, out IconInfo? cached))
+			if (!_byPath.TryGetValue(path, out IconInfo? icon))
 			{
-				return cached;
+				icon = BuildIcon(path);
+
+				if (_insertionOrder.Count >= Capacity)
+				{
+					_ = _byPath.Remove(_insertionOrder.Dequeue());
+				}
+
+				_byPath[path] = icon;
+				_insertionOrder.Enqueue(path);
 			}
 
-			if (_insertionOrder.Count >= Capacity)
-			{
-				_ = _byPath.Remove(_insertionOrder.Dequeue());
-			}
-
-			_byPath[path] = icon;
-			_insertionOrder.Enqueue(path);
+			return icon ?? fallbackIcon;
 		}
-
-		return icon;
 	}
 
 	private static IconInfo? BuildIcon(string path)

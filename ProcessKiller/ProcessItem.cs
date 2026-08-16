@@ -28,7 +28,7 @@ internal sealed partial class ProcessItem : ListItem
 
 		Title = $"{process.ProcessName} - {process.Id}";
 		Subtitle = path;
-		Icon = (gotPath ? iconCache.GetIcon(path) : null) ?? fallbackIcon;
+		Icon = iconCache.GetIcon(gotPath ? path : null, fallbackIcon);
 
 		Details = new Details()
 		{
