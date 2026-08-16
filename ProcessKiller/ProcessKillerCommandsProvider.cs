@@ -11,18 +11,21 @@ public partial class ProcessKillerCommandsProvider : CommandProvider
 	private readonly ICommandItem[] _commands;
 	private readonly SettingsManager _settingsManager = new();
 
+	// Shared by both pages, they list the same executables.
+	private readonly IconCache _iconCache = new();
+
 	public ProcessKillerCommandsProvider()
 	{
 		DisplayName = Resources.plugin_name;
 		Icon = IconHelpers.FromRelativePath("Assets/icon.svg");
 		Settings = _settingsManager.Settings;
 		_commands = [
-			new CommandItem(new ProcessPage(_settingsManager))
+			new CommandItem(new ProcessPage(_settingsManager, _iconCache))
 			{
 				Title = Resources.kill_a_process,
 				Icon = IconHelpers.FromRelativePaths("Assets/ProcessKiller.light.svg", "Assets/ProcessKiller.dark.svg"),
 			},
-			new CommandItem(new PortPage(_settingsManager))
+			new CommandItem(new PortPage(_settingsManager, _iconCache))
 			{
 				Title = Resources.kill_a_process_by_ip_and_port,
 				Icon = IconHelpers.FromRelativePaths("Assets/Port.light.svg", "Assets/Port.dark.svg"),

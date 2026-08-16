@@ -6,19 +6,20 @@ using System.Diagnostics;
 
 namespace ProcessKiller.Commands;
 
-internal sealed partial class KillAllCommand(Process process) : InvokableCommand
+internal sealed partial class KillAllCommand(string processName) : InvokableCommand
 {
 	public override string Name => Resources.kill_all_process;
 
-	private readonly Process Process = process;
+	private readonly string ProcessName = processName;
 
 	public override ICommandResult Invoke()
 	{
-		Process[] processes = Process.GetProcessesByName(Process.ProcessName);
-		foreach (Process p in processes)
+		foreach (Process p in Process.GetProcessesByName(ProcessName))
 		{
-			_ = ProcessHelper.TryKill(p);
-			p.Dispose();
+			using (p)
+			{
+				_ = ProcessHelper.TryKill(p);
+			}
 		}
 
 		return CommandResult.GoHome();

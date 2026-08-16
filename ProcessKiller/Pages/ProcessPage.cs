@@ -3,42 +3,50 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 using ProcessKiller.Helpers;
 using ProcessKiller.Properties;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ProcessKiller.Pages;
 
 internal sealed partial class ProcessPage : ListPage
 {
 	private readonly SettingsManager _settingsManager;
+	private readonly IconCache _iconCache;
 
-	// Items kept alive so their Process/icon-stream can be disposed at the start of the next
-	// refresh, once they're no longer the ones being shown.
-	private List<ProcessItem> _trackedItems = [];
-
-	public ProcessPage(SettingsManager settingsManager)
+	public ProcessPage(SettingsManager settingsManager, IconCache iconCache)
 	{
 		Title = Resources.kill_a_process;
 		Icon = IconHelpers.FromRelativePaths("Assets/Process.light.svg", "Assets/Process.dark.svg");
 		ShowDetails = true;
 		_settingsManager = settingsManager;
+		_iconCache = iconCache;
 	}
 
 	public override IListItem[] GetItems()
 	{
-		foreach (ProcessItem item in _trackedItems)
-		{
-			item.Dispose();
-		}
-
 		var excludeId = _settingsManager.ShowShellExplorer ? null : (int?)ProcessHelper.GetShellWindowId();
 		CommandLineQuery? commandLineQuery = _settingsManager.ShowCommandLine ? new() : null;
 
-		List<ProcessItem> results = ProcessHelper
-			.GetNonSystemProcesses(excludeId)
-			.ConvertAll(p => new ProcessItem(p, commandLineQuery, _settingsManager.ShowCommandLine, Icon));
+		List<Process> processes = ProcessHelper.GetNonSystemProcesses(excludeId);
+		try
+		{
+			List<ProcessItem> results = processes.ConvertAll(p => new ProcessItem(
+				p,
+				commandLineQuery,
+				_settingsManager.ShowCommandLine,
+				_iconCache,
+				Icon));
 
-		results.Reverse();
-		_trackedItems = results;
+			results.Reverse();
 
-		return [.. results];
+			return [.. results];
+		}
+		finally
+		{
+			// The items copied out everything they show, so the snapshots are done.
+			foreach (Process p in processes)
+			{
+				p.Dispose();
+			}
+		}
 	}
 }

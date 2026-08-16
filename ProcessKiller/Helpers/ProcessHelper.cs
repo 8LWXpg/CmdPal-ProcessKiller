@@ -60,19 +60,35 @@ internal static class ProcessHelper
 
 	public static bool TryKill(Process p)
 	{
-		try
+		if (p.HasExited)
 		{
-			if (!p.HasExited)
-			{
-				p.Kill();
-				return p.WaitForExit(50);
-			}
-		}
-		catch (Exception)
-		{
-			throw;
+			return false;
 		}
 
-		return false;
+		p.Kill();
+		return p.WaitForExit(50);
+	}
+
+	/// <summary>
+	/// Resolve a process by id and kill it. Items capture the id when the list is built, so by the
+	/// time the command runs the process may be gone.
+	/// </summary>
+	public static bool TryKillById(int processId)
+	{
+		Process p;
+		try
+		{
+			p = Process.GetProcessById(processId);
+		}
+		catch (ArgumentException)
+		{
+			// Nothing is running under that id any more.
+			return false;
+		}
+
+		using (p)
+		{
+			return TryKill(p);
+		}
 	}
 }

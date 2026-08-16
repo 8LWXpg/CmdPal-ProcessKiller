@@ -2,49 +2,33 @@ using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using Microsoft.Win32.SafeHandles;
 using ProcessKiller.Commands;
+using ProcessKiller.Helpers;
 using ProcessKiller.Properties;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Windows.Storage.Streams;
 using Windows.Win32;
 using Windows.Win32.System.Threading;
 
 namespace ProcessKiller;
 
-internal sealed partial class ProcessItem : ListItem, IDisposable
+/// <summary>
+/// A snapshot of a process. Everything shown is read out of <paramref name="process"/> during
+/// construction, so the caller stays the owner and is free to dispose it as soon as the item is
+/// built. The commands carry the id and name rather than the <see cref="Process"/> itself, which
+/// matters because one process backs many items on <see cref="Pages.PortPage"/>.
+/// </summary>
+internal sealed partial class ProcessItem : ListItem
 {
-	private readonly Process _process;
-	private readonly IRandomAccessStream? _iconStream;
-
-	public ProcessItem(Process process, CommandLineQuery? commandLineQuery, bool showCommandLine, IconInfo fallbackIcon) : base(new KillCommand(process))
+	public ProcessItem(Process process, CommandLineQuery? commandLineQuery, bool showCommandLine, IconCache iconCache, IconInfo fallbackIcon) : base(new KillCommand(process.Id))
 	{
-		_process = process;
-
 		var gotPath = TryGetProcessFilename(process, out var path);
 		var commandLine = commandLineQuery?.GetCommandLine(process.Id);
 
 		Title = $"{process.ProcessName} - {process.Id}";
 		Subtitle = path;
-		// https://github.com/microsoft/PowerToys/issues/39485
-		if (gotPath)
-		{
-			_iconStream = ThumbnailHelper.GetThumbnail(path).GetAwaiter().GetResult();
-			if (_iconStream != null)
-			{
-				var data = new IconData(RandomAccessStreamReference.CreateFromStream(_iconStream));
-				Icon = new IconInfo(data, data);
-			}
-			else
-			{
-				Icon = fallbackIcon;
-			}
-		}
-		else
-		{
-			Icon = fallbackIcon;
-		}
+		Icon = (gotPath ? iconCache.GetIcon(path) : null) ?? fallbackIcon;
 
 		Details = new Details()
 		{
@@ -54,14 +38,8 @@ internal sealed partial class ProcessItem : ListItem, IDisposable
 		};
 
 		MoreCommands = [
-			new CommandContextItem(new KillAllCommand(process))
+			new CommandContextItem(new KillAllCommand(process.ProcessName))
 		];
-	}
-
-	public void Dispose()
-	{
-		_process.Dispose();
-		_iconStream?.Dispose();
 	}
 
 	private static IDetailsElement[] BuildDetailsElement(

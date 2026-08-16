@@ -2,18 +2,18 @@ using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using ProcessKiller.Helpers;
 using ProcessKiller.Properties;
-using System.Diagnostics;
 
 namespace ProcessKiller;
-internal sealed partial class KillCommand(Process process) : InvokableCommand
+
+internal sealed partial class KillCommand(int processId) : InvokableCommand
 {
 	public override string Name => Resources.kill;
 
-	private readonly Process Process = process;
+	private readonly int ProcessId = processId;
 
 	public override ICommandResult Invoke()
 	{
-		_ = ProcessHelper.TryKill(Process);
+		_ = ProcessHelper.TryKillById(ProcessId);
 		return CommandResult.GoHome();
 	}
 }
