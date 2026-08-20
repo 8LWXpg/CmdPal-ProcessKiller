@@ -2,6 +2,7 @@ using Microsoft.CommandPalette.Extensions.Toolkit;
 using ProcessKiller.Properties;
 
 namespace ProcessKiller.Helpers;
+
 internal sealed class SettingsManager : JsonSettingsManager
 {
 	public bool ShowCommandLine => _showCommandLine.Value;

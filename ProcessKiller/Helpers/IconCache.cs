@@ -1,6 +1,6 @@
-using Microsoft.CommandPalette.Extensions.Toolkit;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.CommandPalette.Extensions.Toolkit;
 using Windows.Storage.Streams;
 
 namespace ProcessKiller.Helpers;

@@ -1,9 +1,9 @@
+using System.Diagnostics;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using ProcessKiller.Commands;
 using ProcessKiller.Helpers;
 using ProcessKiller.Properties;
-using System.Diagnostics;
 
 namespace ProcessKiller;
 

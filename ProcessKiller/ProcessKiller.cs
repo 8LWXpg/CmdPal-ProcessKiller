@@ -1,5 +1,5 @@
-using Microsoft.CommandPalette.Extensions;
 using System.Runtime.InteropServices;
+using Microsoft.CommandPalette.Extensions;
 
 namespace ProcessKiller;
 

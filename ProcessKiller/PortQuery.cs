@@ -1,8 +1,8 @@
+using System.Diagnostics;
+using System.Globalization;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using ProcessKiller.Helpers;
-using System.Diagnostics;
-using System.Globalization;
 
 namespace ProcessKiller;
 
