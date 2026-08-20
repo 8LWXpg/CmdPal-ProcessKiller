@@ -73,12 +73,6 @@ internal sealed partial class PortQuery : IDisposable
 
 	public IListItem[] GetItems(bool showCommandLine, IconCache iconCache, IconInfo fallbackIcon)
 	{
-		// wmic costs more than everything else here put together, so start it first and collect it
-		// once the icons are ready.
-		Task<CommandLineQuery>? commandLines = showCommandLine
-			? Task.Run(() => new CommandLineQuery())
-			: null;
-
 		// Once per process rather than once per socket, since Query repeats a process per address.
 		Dictionary<int, string?> pathById = [];
 		foreach (Process p in _processes)
@@ -88,9 +82,7 @@ internal sealed partial class PortQuery : IDisposable
 
 		iconCache.Prefetch(pathById.Values);
 
-		CommandLineQuery? commandLineQuery = commandLines?.GetAwaiter().GetResult();
-
-		return [.. Query.Select(e => new ProcessItem(e.Value, pathById[e.Value.Id], commandLineQuery, showCommandLine, iconCache, fallbackIcon)
+		return [.. Query.Select(e => new ProcessItem(e.Value, pathById[e.Value.Id], showCommandLine, iconCache, fallbackIcon)
 		{
 			Title = e.Key,
 		})];

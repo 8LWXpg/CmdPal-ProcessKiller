@@ -2,3 +2,6 @@
 GetShellWindow
 QueryFullProcessImageName
 OpenProcess
+UNICODE_STRING
+NtQueryInformationProcess
+STATUS_INFO_LENGTH_MISMATCH

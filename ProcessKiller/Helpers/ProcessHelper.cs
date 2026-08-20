@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.Win32.SafeHandles;
+using Windows.Wdk.System.Threading;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.System.Threading;
@@ -45,6 +46,40 @@ internal static class ProcessHelper
 		}
 
 		return result;
+	}
+
+	/// <summary>
+	/// Command line of a process, or null when it cannot be read.
+	/// </summary>
+	public static unsafe string? GetCommandLine(Process p)
+	{
+		using SafeFileHandle handle = PInvoke.OpenProcess_SafeHandle(PROCESS_ACCESS_RIGHTS.PROCESS_QUERY_LIMITED_INFORMATION, false, (uint)p.Id);
+		if (handle.IsInvalid)
+		{
+			return null;
+		}
+
+		HANDLE process = (HANDLE)handle.DangerousGetHandle();
+		uint size = 0;
+
+		// The first call only reports how big the answer is.
+		if (Windows.Wdk.PInvoke.NtQueryInformationProcess(process, PROCESSINFOCLASS.ProcessCommandLineInformation, null, 0, ref size) != NTSTATUS.STATUS_INFO_LENGTH_MISMATCH || size == 0)
+		{
+			return null;
+		}
+
+		var buffer = new byte[size];
+		fixed (byte* info = buffer)
+		{
+			if (Windows.Wdk.PInvoke.NtQueryInformationProcess(process, PROCESSINFOCLASS.ProcessCommandLineInformation, info, size, ref size).SeverityCode != NTSTATUS.Severity.Success)
+			{
+				return null;
+			}
+
+			// The text follows the UNICODE_STRING header, whose Buffer points back into it.
+			UNICODE_STRING* value = (UNICODE_STRING*)info;
+			return value->Length == 0 ? null : new string(value->Buffer, 0, value->Length / 2);
+		}
 	}
 
 	/// <summary>

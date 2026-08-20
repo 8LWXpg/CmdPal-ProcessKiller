@@ -24,19 +24,11 @@ internal sealed partial class ProcessPage : ListPage
 	{
 		var excludeId = _settingsManager.ShowShellExplorer ? null : (int?)ProcessHelper.GetShellWindowId();
 
-		// wmic is the slowest thing on this page by far and nothing below needs it until the items
-		// are built, so start it before doing anything else.
-		Task<CommandLineQuery>? commandLines = _settingsManager.ShowCommandLine
-			? Task.Run(() => new CommandLineQuery())
-			: null;
-
 		List<Process> processes = ProcessHelper.GetNonSystemProcesses(excludeId);
 		try
 		{
 			List<string?> paths = processes.ConvertAll(ProcessHelper.GetExecutablePath);
 			_iconCache.Prefetch(paths);
-
-			CommandLineQuery? commandLineQuery = commandLines?.GetAwaiter().GetResult();
 
 			List<ProcessItem> results = [];
 			for (var i = 0; i < processes.Count; i++)
@@ -44,7 +36,6 @@ internal sealed partial class ProcessPage : ListPage
 				results.Add(new ProcessItem(
 					processes[i],
 					paths[i],
-					commandLineQuery,
 					_settingsManager.ShowCommandLine,
 					_iconCache,
 					Icon));

@@ -13,10 +13,10 @@ namespace ProcessKiller;
 /// </summary>
 internal sealed partial class ProcessItem : ListItem
 {
-	public ProcessItem(Process process, string? executablePath, CommandLineQuery? commandLineQuery, bool showCommandLine, IconCache iconCache, IconInfo fallbackIcon) : base(new KillCommand(process.Id))
+	public ProcessItem(Process process, string? executablePath, bool showCommandLine, IconCache iconCache, IconInfo fallbackIcon) : base(new KillCommand(process.Id))
 	{
 		var path = executablePath ?? process.ProcessName;
-		var commandLine = commandLineQuery?.GetCommandLine(process.Id);
+		var commandLine = showCommandLine ? ProcessHelper.GetCommandLine(process) : null;
 
 		Title = $"{process.ProcessName} - {process.Id}";
 		Subtitle = path;
