@@ -22,7 +22,7 @@ public class IconBytesReferenceTests
 		Random.Shared.NextBytes(bytes);
 		IconBytesReference shared = new(bytes);
 
-		byte[][] reads = await Task.WhenAll(Enumerable.Range(0, Rows)
+		var reads = await Task.WhenAll(Enumerable.Range(0, Rows)
 			.Select(_ => Task.Run(async () => await ReadAll(await shared.OpenReadAsync()))));
 
 		// Counted rather than compared per row: the failure mode is a handful of short reads,
