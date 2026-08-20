@@ -15,17 +15,31 @@ internal static class ProcessHelper
 		"svchost",
 		"idle",
 		"system",
+		"secure system",
+		"memory compression",
+		"registry",
 		"rundll32",
 		"csrss",
 		"lsass",
-		"lsm",
+		"lsaiso",
+		"ngciso",
 		"smss",
 		"wininit",
 		"winlogon",
 		"services",
 		"spoolsv",
-		// Used by this Plugin
 		"wmiprvse",
+		"dwm",
+		"fontdrvhost",
+		"audiodg",
+		"dashost",
+		"wudfhost",
+		"wudfcompanionhost",
+		"wlanext",
+		"searchindexer",
+		"securityhealthservice",
+		"msmpeng",
+		"nissrv",
 	];
 
 	private static bool IsSystemProcess(Process p) => SystemProcessList.Contains(p.ProcessName, StringComparer.OrdinalIgnoreCase);
@@ -59,7 +73,7 @@ internal static class ProcessHelper
 			return null;
 		}
 
-		HANDLE process = (HANDLE)handle.DangerousGetHandle();
+		var process = (HANDLE)handle.DangerousGetHandle();
 		uint size = 0;
 
 		// The first call only reports how big the answer is.
@@ -77,7 +91,7 @@ internal static class ProcessHelper
 			}
 
 			// The text follows the UNICODE_STRING header, whose Buffer points back into it.
-			UNICODE_STRING* value = (UNICODE_STRING*)info;
+			var value = (UNICODE_STRING*)info;
 			return value->Length == 0 ? null : new string(value->Buffer, 0, value->Length / 2);
 		}
 	}
