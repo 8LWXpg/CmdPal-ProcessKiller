@@ -12,13 +12,8 @@ namespace ProcessKiller.Helpers;
 /// </summary>
 internal sealed class IconCache
 {
-	// A null result means the shell had no thumbnail, cached so the miss is not retried on every
-	// refresh. The caller's fallback is substituted on return and never stored, so pages that fall
-	// back to different icons can share one cache.
-	//
-	// Storing the Lazy rather than the icon is what keeps the thumbnail call outside the
-	// dictionary's lock: one path is still only ever fetched once, but different paths resolve at
-	// the same time.
+	// null means no thumbnail, cached so the miss is not retried. The Lazy keeps the thumbnail
+	// call outside the dictionary's lock.
 	private readonly ConcurrentDictionary<string, Lazy<IconInfo?>> _byPath = new();
 
 	/// <summary>
