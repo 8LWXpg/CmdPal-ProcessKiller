@@ -1,4 +1,5 @@
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using System.Collections.Concurrent;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage.Streams;
 
@@ -11,14 +12,14 @@ namespace ProcessKiller.Helpers;
 /// </summary>
 internal sealed class IconCache
 {
-	private const int Capacity = 512;
-
 	// A null result means the shell had no thumbnail, cached so the miss is not retried on every
 	// refresh. The caller's fallback is substituted on return and never stored, so pages that fall
 	// back to different icons can share one cache.
-	private readonly Dictionary<string, Lazy<IconInfo?>> _byPath = [];
-	private readonly Queue<string> _insertionOrder = new();
-	private readonly Lock _lock = new();
+	//
+	// Storing the Lazy rather than the icon is what keeps the thumbnail call outside the
+	// dictionary's lock: one path is still only ever fetched once, but different paths resolve at
+	// the same time.
+	private readonly ConcurrentDictionary<string, Lazy<IconInfo?>> _byPath = new();
 
 	/// <summary>
 	/// Get the icon for <paramref name="path"/>, or <paramref name="fallbackIcon"/> when there is
@@ -35,31 +36,8 @@ internal sealed class IconCache
 	public void Prefetch(IEnumerable<string?> paths)
 		=> Parallel.ForEach(paths.OfType<string>().Distinct(), path => _ = Entry(path).Value);
 
-	/// <summary>
-	/// The cache slot for a path. The lock covers the dictionary only, never the thumbnail call,
-	/// so different paths resolve in parallel while one path is still only ever fetched once.
-	/// </summary>
 	private Lazy<IconInfo?> Entry(string path)
-	{
-		lock (_lock)
-		{
-			if (_byPath.TryGetValue(path, out Lazy<IconInfo?>? icon))
-			{
-				return icon;
-			}
-
-			icon = new Lazy<IconInfo?>(() => BuildIcon(path), LazyThreadSafetyMode.ExecutionAndPublication);
-
-			if (_insertionOrder.Count >= Capacity)
-			{
-				_ = _byPath.Remove(_insertionOrder.Dequeue());
-			}
-
-			_byPath[path] = icon;
-			_insertionOrder.Enqueue(path);
-			return icon;
-		}
-	}
+		=> _byPath.GetOrAdd(path, p => new Lazy<IconInfo?>(() => BuildIcon(p), LazyThreadSafetyMode.ExecutionAndPublication));
 
 	private static IconInfo? BuildIcon(string path)
 	{
