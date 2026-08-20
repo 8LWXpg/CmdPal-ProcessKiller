@@ -1,8 +1,13 @@
 # Changelog
 
-## 1.1.2
+## 1.2.0
 
-- Fix memory usage with dispose pattern
+- Fixed memory usage with dispose pattern
+- Read command lines directly from the process instead of `wmic`
+- Load icons in parallel and cache them between invocations
+- Extended the filtered system process list
+- Moved to .NET 10
+- Bumped dependencies
 
 ## 1.1.1
 
