@@ -9,53 +9,72 @@ namespace ProcessKiller;
 
 /// <summary>
 /// A snapshot of a process. Everything shown is read during construction, so the caller keeps
-/// ownership and can dispose the process as soon as the item is built.
+/// ownership and can dispose the process as soon as the item is built. The details are only
+/// assembled when the host asks for them.
 /// </summary>
 internal sealed partial class ProcessItem : ListItem
 {
+	private readonly string _processName;
+	private readonly string _path;
+	private readonly string _mainWindowTitle;
+	private readonly string _memory;
+	private readonly string? _commandLine;
+	private readonly IconInfo _icon;
+	private IDetails? _details;
+
 	public ProcessItem(Process process, string? executablePath, bool showCommandLine, IconCache iconCache, IconInfo fallbackIcon) : base(new KillCommand(process.Id))
 	{
 		var path = executablePath ?? process.ProcessName;
-		var commandLine = showCommandLine ? ProcessHelper.GetCommandLine(process) : null;
+
+		_icon = iconCache.GetIcon(executablePath, fallbackIcon);
 
 		Title = $"{process.ProcessName} - {process.Id}";
 		Subtitle = path;
-		Icon = iconCache.GetIcon(executablePath, fallbackIcon);
+		Icon = _icon;
 
-		Details = new Details()
-		{
-			Title = process.ProcessName,
-			HeroImage = Icon,
-			Metadata = BuildDetailsElement(process, path, showCommandLine, commandLine),
-		};
+		// Read now, build later. The page disposes the process as soon as the list is built, so
+		// the values have to be taken here even though the objects holding them are not needed
+		// until a row is shown.
+		_processName = process.ProcessName;
+		_path = path;
+		_mainWindowTitle = process.MainWindowTitle;
+		_memory = FormatMemorySize(process.WorkingSet64);
+		_commandLine = showCommandLine ? ProcessHelper.GetCommandLine(process) : null;
 
 		MoreCommands = [
 			new CommandContextItem(new KillAllCommand(process.ProcessName))
 		];
 	}
 
-	private static IDetailsElement[] BuildDetailsElement(
-		Process process,
-		string path,
-		bool showCommandLine,
-		string? commandLine)
+	/// <summary>
+	/// Built on first read. Only the highlighted row is ever shown, so building this for every
+	/// row costs several objects each for the host to marshal and then discard.
+	/// </summary>
+	public override IDetails? Details => _details ??= BuildDetails();
+
+	private Details BuildDetails()
 	{
 		List<DetailsElement> details = [];
 
-		if (!string.IsNullOrWhiteSpace(process.MainWindowTitle))
+		if (!string.IsNullOrWhiteSpace(_mainWindowTitle))
 		{
-			details.Add(new() { Key = Resources.detail_main_window, Data = new DetailsLink(string.Empty, process.MainWindowTitle) });
+			details.Add(new() { Key = Resources.detail_main_window, Data = new DetailsLink(string.Empty, _mainWindowTitle) });
 		}
 
-		details.Add(new() { Key = Resources.detail_memory, Data = new DetailsLink(string.Empty, FormatMemorySize(process.WorkingSet64)) });
-		details.Add(new() { Key = Resources.detail_path, Data = new DetailsLink(string.Empty, path) });
+		details.Add(new() { Key = Resources.detail_memory, Data = new DetailsLink(string.Empty, _memory) });
+		details.Add(new() { Key = Resources.detail_path, Data = new DetailsLink(string.Empty, _path) });
 
-		if (showCommandLine && !string.IsNullOrWhiteSpace(commandLine))
+		if (!string.IsNullOrWhiteSpace(_commandLine))
 		{
-			details.Add(new() { Key = Resources.detail_command_line, Data = new DetailsLink(string.Empty, commandLine) });
+			details.Add(new() { Key = Resources.detail_command_line, Data = new DetailsLink(string.Empty, _commandLine) });
 		}
 
-		return [.. details.Cast<IDetailsElement>()];
+		return new Details()
+		{
+			Title = _processName,
+			HeroImage = _icon,
+			Metadata = [.. details.Cast<IDetailsElement>()],
+		};
 	}
 
 	private const double KB = 1024;
