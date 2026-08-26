@@ -24,21 +24,13 @@ $headers = @{
 $body = @{ type = 'ProductId'; url = $ProductId; ring = 'RP' }
 $response = Invoke-WebRequest -Uri 'https://store.rg-adguard.net/api/GetFiles' -Method Post -Headers $headers -Body $body
 
-$bundle = $response.Links |
-	Where-Object outerHTML -like '*.msixbundle</a>' |
-	ForEach-Object {
-		$name = [regex]::Match($_.outerHTML, '>(?<name>[^<]+)</a>$').Groups['name'].Value
-		[pscustomobject]@{
-			Url     = $_.href
-			Name    = $name
-			Version = [version]($name -split '_')[1]
-		}
-	} |
-	Sort-Object Version -Descending |
-	Select-Object -First 1
-
-if (-not $bundle) {
+$link = $response.Links | Where-Object outerHTML -like '*.msixbundle</a>' | Select-Object -Last 1
+if (-not $link) {
 	throw 'No msixbundle link found in store.rg-adguard.net response.'
+}
+$bundle = [pscustomobject]@{
+	Url  = $link.href
+	Name = [regex]::Match($link.outerHTML, '>(?<name>[^<]+)</a>$').Groups['name'].Value
 }
 
 Write-Host "Downloading $($bundle.Name) ..."
