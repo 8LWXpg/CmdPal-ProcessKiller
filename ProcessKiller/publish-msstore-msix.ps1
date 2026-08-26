@@ -1,10 +1,3 @@
-#Requires -Version 7
-<#
-Downloads the latest Microsoft Store msixbundle for this app from store.rg-adguard.net,
-uploads it to the GitHub release matching the latest git tag, then updates the winget
-manifest via komac.
-#>
-
 $ErrorActionPreference = 'Stop'
 
 $ProductId = '9PNHK9LDHMHS'
@@ -23,7 +16,7 @@ $headers = @{
 $body = @{ type = 'ProductId'; url = $ProductId; ring = 'RP' }
 $response = Invoke-WebRequest -Uri 'https://store.rg-adguard.net/api/GetFiles' -Method Post -Headers $headers -Body $body
 
-if (-not ($link = $response.Links | Where-Object outerHTML -like '*.msixbundle</a>' | Select-Object -Last 1)) {
+if (-not ($link = $response.Links | Where-Object outerHTML -Like '*.msixbundle</a>' | Select-Object -Last 1)) {
 	throw 'No msixbundle link found in store.rg-adguard.net response.'
 }
 $bundle = [pscustomobject]@{
@@ -42,7 +35,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 if (-not ($assetUrl = (gh release view $tag --json assets | ConvertFrom-Json).assets |
-			Where-Object Name -eq $bundle.Name |
+			Where-Object Name -EQ ($bundle.Name -replace '~', '.') |
 			Select-Object -ExpandProperty url)) {
 	throw 'Could not resolve uploaded asset URL.'
 }
