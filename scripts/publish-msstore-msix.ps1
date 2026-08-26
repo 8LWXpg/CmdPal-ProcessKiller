@@ -22,14 +22,16 @@ $headers = @{
 	'Referer'    = 'https://store.rg-adguard.net/'
 }
 $body = @{ type = 'ProductId'; url = $ProductId; ring = 'RP' }
-$html = Invoke-RestMethod -Uri 'https://store.rg-adguard.net/api/GetFiles' -Method Post -Headers $headers -Body $body
+$response = Invoke-WebRequest -Uri 'https://store.rg-adguard.net/api/GetFiles' -Method Post -Headers $headers -Body $body
 
-$bundle = [regex]::Matches($html, '<a href="(?<url>[^"]+)"[^>]*>(?<name>[^<]+\.msixbundle)</a>') |
+$bundle = $response.Links |
+	Where-Object outerHTML -like '*.msixbundle</a>' |
 	ForEach-Object {
+		$name = [regex]::Match($_.outerHTML, '>(?<name>[^<]+)</a>$').Groups['name'].Value
 		[pscustomobject]@{
-			Url     = $_.Groups['url'].Value
-			Name    = $_.Groups['name'].Value
-			Version = [version]($_.Groups['name'].Value -split '_')[1]
+			Url     = $_.href
+			Name    = $name
+			Version = [version]($name -split '_')[1]
 		}
 	} |
 	Sort-Object Version -Descending |
