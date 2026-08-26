@@ -14,32 +14,33 @@ namespace ProcessKiller;
 /// </summary>
 internal sealed partial class ProcessItem : ListItem
 {
-	private readonly string _processName;
-	private readonly string _path;
-	private readonly string _mainWindowTitle;
-	private readonly string _memory;
-	private readonly string? _commandLine;
-	private readonly IconInfo _icon;
+	private readonly record struct ProcessDetail(
+	string ProcessName,
+	string Path,
+	string MainWindowTitle,
+	string Memory,
+	string? CommandLine);
+
+	private readonly ProcessDetail _processDetail;
 	private IDetails? _details;
 
 	public ProcessItem(Process process, string? executablePath, bool showCommandLine, IconCache iconCache, IconInfo fallbackIcon) : base(new KillCommand(process.Id))
 	{
 		var path = executablePath ?? process.ProcessName;
 
-		_icon = iconCache.GetIcon(executablePath, fallbackIcon);
-
 		Title = $"{process.ProcessName} - {process.Id}";
 		Subtitle = path;
-		Icon = _icon;
+		Icon = iconCache.GetIcon(executablePath, fallbackIcon);
 
 		// Read now, build later. The page disposes the process as soon as the list is built, so
 		// the values have to be taken here even though the objects holding them are not needed
 		// until a row is shown.
-		_processName = process.ProcessName;
-		_path = path;
-		_mainWindowTitle = process.MainWindowTitle;
-		_memory = FormatMemorySize(process.WorkingSet64);
-		_commandLine = showCommandLine ? ProcessHelper.GetCommandLine(process) : null;
+		_processDetail = new(
+				process.ProcessName,
+				path,
+				process.MainWindowTitle,
+				FormatMemorySize(process.WorkingSet64),
+				showCommandLine ? ProcessHelper.GetCommandLine(process) : null);
 
 		MoreCommands = [
 			new CommandContextItem(new KillAllCommand(process.ProcessName))
@@ -56,23 +57,23 @@ internal sealed partial class ProcessItem : ListItem
 	{
 		List<DetailsElement> details = [];
 
-		if (!string.IsNullOrWhiteSpace(_mainWindowTitle))
+		if (!string.IsNullOrWhiteSpace(_processDetail.MainWindowTitle))
 		{
-			details.Add(new() { Key = Resources.detail_main_window, Data = new DetailsLink(string.Empty, _mainWindowTitle) });
+			details.Add(new() { Key = Resources.detail_main_window, Data = new DetailsLink(string.Empty, _processDetail.MainWindowTitle) });
 		}
 
-		details.Add(new() { Key = Resources.detail_memory, Data = new DetailsLink(string.Empty, _memory) });
-		details.Add(new() { Key = Resources.detail_path, Data = new DetailsLink(string.Empty, _path) });
+		details.Add(new() { Key = Resources.detail_memory, Data = new DetailsLink(string.Empty, _processDetail.Memory) });
+		details.Add(new() { Key = Resources.detail_path, Data = new DetailsLink(string.Empty, _processDetail.Path) });
 
-		if (!string.IsNullOrWhiteSpace(_commandLine))
+		if (!string.IsNullOrWhiteSpace(_processDetail.CommandLine))
 		{
-			details.Add(new() { Key = Resources.detail_command_line, Data = new DetailsLink(string.Empty, _commandLine) });
+			details.Add(new() { Key = Resources.detail_command_line, Data = new DetailsLink(string.Empty, _processDetail.CommandLine) });
 		}
 
 		return new Details()
 		{
-			Title = _processName,
-			HeroImage = _icon,
+			Title = _processDetail.ProcessName,
+			HeroImage = Icon!,
 			Metadata = [.. details.Cast<IDetailsElement>()],
 		};
 	}
