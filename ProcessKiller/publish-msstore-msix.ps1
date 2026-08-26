@@ -19,14 +19,11 @@ $response = Invoke-WebRequest -Uri 'https://store.rg-adguard.net/api/GetFiles' -
 if (-not ($link = $response.Links | Where-Object outerHTML -Like '*.msixbundle</a>' | Select-Object -Last 1)) {
 	throw 'No msixbundle link found in store.rg-adguard.net response.'
 }
-$bundle = [pscustomobject]@{
-	Url  = $link.href
-	Name = [regex]::Match($link.outerHTML, '>(?<name>[^<]+)</a>$').Groups['name'].Value
-}
+$fileName = "${PackageIdentifier}_$version.0.Msixbundle"
 
-Write-Host "Downloading $($bundle.Name) ..."
-$outFile = Join-Path ([System.IO.Path]::GetTempPath()) $bundle.Name
-Invoke-WebRequest -Uri $bundle.Url -Headers $headers -OutFile $outFile
+Write-Host "Downloading $fileName ..."
+$outFile = Join-Path ([System.IO.Path]::GetTempPath()) $fileName
+Invoke-WebRequest -Uri $link.href -Headers $headers -OutFile $outFile
 
 Write-Host "Uploading to release $tag ..."
 gh release upload $tag $outFile --clobber
@@ -35,7 +32,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 if (-not ($assetUrl = (gh release view $tag --json assets | ConvertFrom-Json).assets |
-			Where-Object Name -EQ ($bundle.Name -replace '~', '.') |
+			Where-Object Name -EQ $fileName |
 			Select-Object -ExpandProperty url)) {
 	throw 'Could not resolve uploaded asset URL.'
 }
