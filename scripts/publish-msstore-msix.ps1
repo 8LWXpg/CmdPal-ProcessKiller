@@ -4,13 +4,11 @@ Downloads the latest Microsoft Store msixbundle for this app from store.rg-adgua
 uploads it to the GitHub release matching the latest git tag, then updates the winget
 manifest via komac.
 #>
-[CmdletBinding()]
-param(
-	[string]$ProductId = '9PNHK9LDHMHS',
-	[string]$PackageIdentifier = '8LWXpg.ProcessKillerforCommandPalette'
-)
 
 $ErrorActionPreference = 'Stop'
+
+$ProductId = '9PNHK9LDHMHS'
+$PackageIdentifier = '8LWXpg.ProcessKillerforCommandPalette'
 
 $tag = git tag --sort=-v:refname | Select-Object -First 1
 if (-not $tag) {
