@@ -1,0 +1,62 @@
+#Requires -Version 7
+<#
+Downloads the latest Microsoft Store msixbundle for this app from store.rg-adguard.net,
+uploads it to the GitHub release matching the latest git tag, then updates the winget
+manifest via komac.
+#>
+[CmdletBinding()]
+param(
+	[string]$ProductId = '9PNHK9LDHMHS',
+	[string]$PackageIdentifier = '8LWXpg.ProcessKillerforCommandPalette'
+)
+
+$ErrorActionPreference = 'Stop'
+
+$tag = git tag --sort=-v:refname | Select-Object -First 1
+if (-not $tag) {
+	throw 'No git tags found.'
+}
+$version = $tag.TrimStart('v')
+
+$headers = @{
+	'User-Agent' = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+	'Origin'     = 'https://store.rg-adguard.net'
+	'Referer'    = 'https://store.rg-adguard.net/'
+}
+$body = @{ type = 'ProductId'; url = $ProductId; ring = 'RP' }
+$html = Invoke-RestMethod -Uri 'https://store.rg-adguard.net/api/GetFiles' -Method Post -Headers $headers -Body $body
+
+$bundle = [regex]::Matches($html, '<a href="(?<url>[^"]+)"[^>]*>(?<name>[^<]+\.msixbundle)</a>') |
+	ForEach-Object {
+		[pscustomobject]@{
+			Url     = $_.Groups['url'].Value
+			Name    = $_.Groups['name'].Value
+			Version = [version]($_.Groups['name'].Value -split '_')[1]
+		}
+	} |
+	Sort-Object Version -Descending |
+	Select-Object -First 1
+
+if (-not $bundle) {
+	throw 'No msixbundle link found in store.rg-adguard.net response.'
+}
+
+Write-Host "Downloading $($bundle.Name) ..."
+$outFile = Join-Path ([System.IO.Path]::GetTempPath()) $bundle.Name
+Invoke-WebRequest -Uri $bundle.Url -Headers $headers -OutFile $outFile
+
+Write-Host "Uploading to release $tag ..."
+gh release upload $tag $outFile --clobber
+if ($LASTEXITCODE -ne 0) {
+	throw 'gh release upload failed.'
+}
+
+$assetUrl = (gh release view $tag --json assets | ConvertFrom-Json).assets |
+	Where-Object Name -eq $bundle.Name |
+	Select-Object -ExpandProperty url
+if (-not $assetUrl) {
+	throw 'Could not resolve uploaded asset URL.'
+}
+
+Write-Host "Updating winget manifest for $PackageIdentifier $version ..."
+komac update $PackageIdentifier --version $version --urls $assetUrl
