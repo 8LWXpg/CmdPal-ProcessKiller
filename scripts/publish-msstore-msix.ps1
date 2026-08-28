@@ -19,7 +19,7 @@ $response = Invoke-WebRequest -Uri 'https://store.rg-adguard.net/api/GetFiles' -
 if (-not ($link = $response.Links | Where-Object outerHTML -Like '*.msixbundle</a>' | Select-Object -Last 1)) {
 	throw 'No msixbundle link found in store.rg-adguard.net response.'
 }
-$fileName = "${PackageIdentifier}_$version.0.Msixbundle"
+$fileName = "${PackageIdentifier}_$version.msixbundle"
 
 Write-Host "Downloading $fileName ..."
 $outFile = Join-Path ([System.IO.Path]::GetTempPath()) $fileName
