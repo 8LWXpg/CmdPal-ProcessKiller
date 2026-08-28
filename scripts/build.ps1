@@ -6,7 +6,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-Push-Location $PSScriptRoot
+Push-Location $PSScriptRoot/../Processkiller
 
 if (-not $skipBump){
 	$version = Read-Host -Prompt 'New tag'
