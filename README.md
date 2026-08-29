@@ -40,3 +40,8 @@ winget install 9PNHK9LDHMHS
 2. `sudo winapp cert install cert.pfx` (only need to do this once)
 3. Click to install or `Add-AppxPackage <msix>`
 
+## Contributing
+
+### Localization
+
+If you want to help localize this plugin, please check the [localization guide](./Localizing.md)
